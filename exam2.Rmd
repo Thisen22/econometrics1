@@ -1,0 +1,20 @@
+---
+title: "Exam 2"
+author: "Mathias Kold"
+date: "2024-04-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+data2 <- read_csv("data2.csv")
+```
+
+
+## Question 3
+
+
