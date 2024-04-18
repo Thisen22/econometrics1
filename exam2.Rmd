@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(readr)
 data2 <- read_csv("data2.csv")
+educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- data2$minority
 ```
 
 
@@ -21,4 +22,13 @@ model = lm(salary ~ educ + salbegin + male + minority, data = data2)
 model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 ```
 
+```{r}
+summary(model)
+summary(model2)
+```
+
+```{r}
+yhat1 <- -6.93228 + 0.99327*educ + 1.60816*salbegin + 1.83088*male - 1.72539*minority
+yhat2 <- 0.849130 + 0.023578*log(salbegin) + 0.045474*male - -0.041856*minority
+```
 
