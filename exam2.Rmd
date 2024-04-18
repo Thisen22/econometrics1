@@ -17,19 +17,46 @@ educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- 
 
 
 ## Question 3
+1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
+
+Here we use the lm() function to estimate the two models. 
 ```{r}
 library(lmtest)
 model = lm(salary ~ educ + salbegin + male + minority, data = data2)
 model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
-
-resettest(model); resettest(model2)
 ```
 
 ```{r}
 summary(model)
+```
+From the first model it can be seen that all variables except for "minority" are significant at a 5% level. The intercept is almost -7, and minority affects salary negative as well. The rest of the variables will affect the salary positive.
+The dummy variables show that men earn 1.83 dollars more than females and minorities earn 1.73 less than non-minorities.
+
+```{r}
 summary(model2)
 ```
+From model 2 it can be seen that all variables are significant at a 5% level, and intercept, education and log(salbegin) are significant at a .1% level.
+All variables except minority is positive. 
+The dummy variables show that men earn 4.5% more than female and minorities earn 4.2% less than non-minorities.
 
+It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
+
+2. Carry out graphical model checking of the two models. Which model would you prefer?
+```{r}
+plot(model, 2)
+```
+
+```{r}
+plot(model2, 2)
+```
+It seems like model 2 is the better model to describe salary, since the residuals are closer to the linear regression and there are fewer outliers.
+
+
+3. Examine whether the two models are misspecified using the RESET test.
+First we use the values found from the two models to find our yhat for model and model2.
+Setting up the new models to perform a RESET test:
+$y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$
+where $\hat{y}$ is the fitted value from the original model. $\hat{y}^2$ and $\hat{y}^3$ will capture any nonlinearities, if present in the model.
 ```{r}
 yhat1 <- -6.93228 + 0.99327*educ + 1.60816*salbegin + 1.83088*male - 1.72539*minority
 yhat2 <- 0.849130 + 0.023578*log(salbegin) + 0.045474*male - -0.041856*minority
@@ -38,4 +65,32 @@ yhat2_sq <- yhat2^2; yhat2_cub <- yhat2^3
 mod1_res <- lm(salary ~ educ + salbegin + male + minority + yhat1_sq + yhat1_cub)
 mod2_res <- lm(log(salary) ~ educ + log(salbegin) + male + minority + yhat2_sq + yhat2_cub)
 ```
+
+When the the RESET models has been made, we can use waldtest to find the F-statistics: 
+```{r}
+waldtest(mod1_res, terms=c("yhat1_sq","yhat1_cub"))
+```
+For model2:
+```{r}
+library(lmtest)
+waldtest(mod2_res, terms=c("yhat2_sq","yhat2_cub"))
+```
+
+To confirm our results, we can use (resettest)
+
+PRØV AT BRUG DE LOGGEDE VARIABLE FRA DATASÆT næste gang.
+```{r}
+resettest(model); resettest(model2)
+```
+
+4. Explain why it could be relevant to include educ2 as an explanatory variable in the two models. Estimate the two models again with educ2 included (along with its corresponding coefficient β5). Briefly comment on the output, and perform the RESET test again
+
+
+
+5. Test the hypothesis H0: β1 = β5 = 0 in both models (from question 4).
+
+
+
+6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
+
 
