@@ -1,0 +1,67 @@
+---
+title: "exam1"
+author: "Mathias Kold"
+date: "2024-04-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exam 1 - OLS and heteroskedasticity
+
+Look at the following model for bank employees wage:
+$$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$
+where salary is yearly wage (in 1000 US dollars), educ is education measured in number of years, salbegin is the starting salary (in 1000 US dollars) for the person's first position in the same bank, male is a dummy variable for gender, minority is one dummy variable indicating whether one belongs to a minority.
+
+## 1 - Estimate the model using OLS. Comment on the output and interpret the results
+```{r}
+options(scipen = 999)
+library(readr)
+data1 <- read_csv("data1.csv")
+model <- lm(salary ~ educ + log(salbegin) + male + minority, data = data1)
+summary(model)
+```
+
+## 2 - Perform graphical model checking.
+```{r}
+plot(model)
+```
+
+
+## 3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
+```{r}
+r=residuals(model)
+res = r^2
+summary(lm(res~educ + log(salbegin) + male + minority, data = data1))
+```
+Because the p-value is under 0.05 we reject the null hypothesis meaning that there is heteroskedasticity in the model.
+
+We can now calculate the LM test, where we have 474 observations and $R^2=0.1231$:
+```{r}
+LM = 0.1231*474
+LM
+```
+We can then calculate the p-value of chi-square $\chi^2_k$:
+```{r}
+1-pchisq(LM,4)
+```
+
+
+```{r}
+library(lmtest)
+bptest(model)
+
+```
+
+
+## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
+
+## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
+
+## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
+
+## 7 - Estimate the model using FGLS and comment on the results.
+
+## 8 - Has the FGLS estimation taken into account all the heteroskedasticity?
