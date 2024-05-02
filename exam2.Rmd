@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(readr)
+library(readr); library(texreg)
 data2 <- read_csv("data2.csv")
 educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- data2$minority; salary <- data2$salary
 ```
@@ -91,6 +91,15 @@ Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_
 
 
 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
+<<<<<<< HEAD
+
+If it is still assumed, that the model is mis-specified, then it could be argued that leaving out the squared 
+
+```{r}
+model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
+summary(model_ed)
+```
+=======
 
 If it is still assumed, that the model is mis-specified, then it could be argued that leaving out the squared 
 
@@ -107,8 +116,34 @@ summary(model_ed2)
 ```{r}
 resettest(model_ed); resettest(model_ed2)
 ```
+Here it can be seen that the p-value increases, when $educ^2$ is included, and therefore we can still not reject $H_0$. The non-linear forms of the fitted values are not statistically significant.
+>>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
 
+```{r}
+model_ed2 <- lm(log(salary)~educ+log(salbegin)+male+minority+I(educ^2))
+summary(model_ed2)
+```
+
+```{r}
+resettest(model_ed); resettest(model_ed2)
+```
+
+<<<<<<< HEAD
 We can set up the 
+=======
+We can set up comparisons of the two models, with and without $educ^2$
+```{r}
+screenreg(list(Model1=model, Model1_ed2=model_ed))
+```
+
+In the above lists, there's an upward bias on educ, when $educ^2$ is not included, whereas there's a negative effect when $educ^2$ is included, while education in the long run will affect your salary positive. 
+
+Comparing for log(salary):
+```{r}
+screenreg(list(Model2=model2, Model2_ed2=model_ed2), digits=5)
+```
+For these, the same pattern can be observed. Education will affect negatively for short education, while a long education will affect your salary positively. 
+>>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
 
 5. Test the hypothesis H0: β1 = β5 = 0 in both models (from question 4).
 
