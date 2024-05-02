@@ -16,7 +16,6 @@ educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- 
 ```
 
 
-## Question 3
 1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
 
 Here we use the lm() function to estimate the two models. 
@@ -53,6 +52,12 @@ It seems like model 2 is the better model to describe salary, since the residual
 
 
 3. Examine whether the two models are misspecified using the RESET test.
+The RESET test tests whether there are any non-linear relations in the data, that the original model(s) don't capture. The RESET test accounts for the degrees of freedom by adding non-linear forms of fitted values of Y to the original model, and the significance of the coeffients are tested in an F-test.
+
+The nullhypothesis, $H_0$ is that the model is correctly specified:
+$$H_0:\delta_1=0=,\delta_2=0$$
+And the alternative hypothesis is:
+$$H_1:\delta_1\neq0,\delta_2=0$$
 First we use the values found from the two models to find our yhat for model and model2.
 Setting up the new models to perform a RESET test:
 $y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$
@@ -82,10 +87,28 @@ PRØV AT BRUG DE LOGGEDE VARIABLE FRA DATASÆT næste gang.
 ```{r}
 resettest(model); resettest(model2)
 ```
+Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are mis-specified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
-4. Explain why it could be relevant to include educ2 as an explanatory variable in the two models. Estimate the two models again with educ2 included (along with its corresponding coefficient β5). Briefly comment on the output, and perform the RESET test again
 
+4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
 
+If it is still assumed, that the model is mis-specified, then it could be argued that leaving out the squared 
+
+```{r}
+model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
+summary(model_ed)
+```
+
+```{r}
+model_ed2 <- lm(log(salary)~educ+log(salbegin)+male+minority+I(educ^2))
+summary(model_ed2)
+```
+
+```{r}
+resettest(model_ed); resettest(model_ed2)
+```
+
+We can set up the 
 
 5. Test the hypothesis H0: β1 = β5 = 0 in both models (from question 4).
 
