@@ -23,6 +23,7 @@ data1 <- read_csv("data1.csv")
 model <- lm(salary ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
 ```
+THE RESULT NEEDS TO BE INTERPRETED
 
 ## 2 - Perform graphical model checking.
 ```{r}
@@ -57,8 +58,47 @@ bptest(model)
 
 
 ## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
+```{r}
+
+```
+
 
 ## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
+$\beta_2$ is the estimate for the starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that the starting salary has an effect on the yearly salary. (MAYBE COMMENT ON WHAT KIND OF EFFECT!).
+
+To test our null hypothesis against the alternative hypothesis we use the t-statistics, which is given by:
+$$t_{{\hat\beta}_j}=\frac{\hat{\beta_j}-1}{se(\hat{\beta_j})}$$
+We will perform a two-side test, so the decision rule will be $|t_{{\hat\beta}_j}|>c$, meaning that the null hypothesis will be rejected if the absolute value of t-statistics is greater than the critical value.
+
+To perform the test we use our estimate $\hat{\beta_2}$ from 1.1.
+```{r}
+bhat2 <- 0.82180
+se_bhat2 <- 0.03603
+
+t_stat <- (bhat2 - 1) / se_bhat2
+t_stat
+```
+
+Then we need to calculate the critical values for the two-sided test:
+```{r}
+alpha <- 0.05
+c <- qt(1-alpha/2, 469)
+c
+```
+```{r}
+abs(t_stat)>c
+```
+
+
+We can see that the absolute value of the t-statistic is greater than the critical value at a 5% significance level, meaning that we reject the null hypothesis, so we instead accept the alternative hypothesis saying that the starting salary does have a statistically significant effect on the yearly salary.
+
+Another way to test the null hypothesis is by calculating the p-value. The definition of the p-value is the probability of obtaining a t-statistic more or at least as extreme than the one observed in the sample. We use R to calculate the p-value in the following way:
+```{r}
+pval <- 2*pt(-abs(t_stat), 469)
+pval
+```
+
+So at a 5% significance level we can then also with the p-value reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
 
 ## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
 
