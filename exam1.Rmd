@@ -38,7 +38,9 @@ The residual vs fitted model shows if the residuals have non-linear patterns. If
 
 The Q-Q residuals plot shows if the residuals are normally distributed. If the residuals fit the dotted line they are normally distributed. In this case, the residuals fit the dotted line except in the last quantiles where they deviate a bit from the dotted line. This could indicate that the residuals are approximately normally distributed although not perfectly normally distributed.
 
-The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. 
+The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. In this case, it can be argued that there is an increasing pattern in the spread of the residuals which indicates heteroskedasticity.
+
+The residuals vs leverage plot helps detect outliers in the model. SKRIV FÆRDIG.
 
 ## 3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
 ```{r}
