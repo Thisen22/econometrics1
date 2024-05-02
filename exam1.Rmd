@@ -23,21 +23,12 @@ data1 <- read_csv("data1.csv")
 model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
 ```
-<<<<<<< HEAD
-<<<<<<< HEAD
-THE RESULT NEEDS TO BE INTERPRETED
-=======
-=======
->>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
+
 From the estimated model it can be seen that the education variable has a value of 0.02327 which means that one extra year of education will raise the salary by approximately 2.3%. The male variable has a value 0.04816 which means that being a man will raise your salary by approximately 4.8%. The minority variable has a value of -0.04237 which means that minorities approximately will have a 4.2% lower salary than people who are not minorities. The salbegin variable have a different interpretation because it is in log form. It has a value of 0.82180 which means that an increase of 1% in your starting salary will make your salary approximately 0.82% higher.
 
 The intercept is 0.84868 which is the value of the dependent variable, in this case salary, when all other variables have a value of 0. So in this case 0.84868 is the expected value of the salary for a person with zero education, without a starting salary and someone who is not a male or a minority.
 
 It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05 but only education and log(salbegin) are statistically significant at a 1% significance level. 
-<<<<<<< HEAD
->>>>>>> 6aa5b932e5710fe69fb2669f42a6c571ddd278a4
-=======
->>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
 
 ## 2 - Perform graphical model checking.
 ```{r}
