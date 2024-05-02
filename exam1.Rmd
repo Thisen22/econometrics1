@@ -109,9 +109,12 @@ pval <- 2*pt(-abs(t_stat), 469)
 pval
 ```
 
-So at a 5% significance level we can then also with the p-value reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
+So at a 5% significance level the p-value also tells us to reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
 
 ## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
+When we want to test multiple hypothesis we turn to the F-statistics:
+$$F=\frac{(SSR_r-SSR_{ur})/q}{SSR_{ur}/(n-k-1)}$$
+where $SSR_r$ is the sum of squared residuals from our unrestricted model, $SSR_{ur}$ is the sum of squared residuals from the restricted and q is the difference in the degrees of freedom between the unrestricted and restricted model.
 
 ## 7 - Estimate the model using FGLS and comment on the results.
 
