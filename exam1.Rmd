@@ -23,27 +23,22 @@ data1 <- read_csv("data1.csv")
 model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
 ```
-<<<<<<< HEAD
-<<<<<<< HEAD
-THE RESULT NEEDS TO BE INTERPRETED
-=======
-=======
->>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
+
 From the estimated model it can be seen that the education variable has a value of 0.02327 which means that one extra year of education will raise the salary by approximately 2.3%. The male variable has a value 0.04816 which means that being a man will raise your salary by approximately 4.8%. The minority variable has a value of -0.04237 which means that minorities approximately will have a 4.2% lower salary than people who are not minorities. The salbegin variable have a different interpretation because it is in log form. It has a value of 0.82180 which means that an increase of 1% in your starting salary will make your salary approximately 0.82% higher.
 
 The intercept is 0.84868 which is the value of the dependent variable, in this case salary, when all other variables have a value of 0. So in this case 0.84868 is the expected value of the salary for a person with zero education, without a starting salary and someone who is not a male or a minority.
 
 It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05 but only education and log(salbegin) are statistically significant at a 1% significance level. 
-<<<<<<< HEAD
->>>>>>> 6aa5b932e5710fe69fb2669f42a6c571ddd278a4
-=======
->>>>>>> d631ea0f98d4a328cbae99946c6b08f3409e5f2e
 
 ## 2 - Perform graphical model checking.
 ```{r}
 plot(model)
 ```
+The residual vs fitted model shows if the residuals have non-linear patterns. If they are equally spread around a horizontal line without any patterns it indicates that the residuals does not have non-linear patterns. From the plot it can be seen that the spread is quite equal around the horizontal red line, although a few outliers exists, which indicates a linear pattern.
 
+The Q-Q residuals plot shows if the residuals are normally distributed. If the residuals fit the dotted line they are normally distributed. In this case, the residuals fit the dotted line except in the last quantiles where they deviate a bit from the dotted line. This could indicate that the residuals are approximately normally distributed although not perfectly normally distributed.
+
+The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. 
 
 ## 3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
 ```{r}
@@ -112,9 +107,12 @@ pval <- 2*pt(-abs(t_stat), 469)
 pval
 ```
 
-So at a 5% significance level we can then also with the p-value reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
+So at a 5% significance level the p-value also tells us to reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
 
 ## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
+When we want to test multiple hypothesis we turn to the F-statistics:
+$$F=\frac{(SSR_r-SSR_{ur})/q}{SSR_{ur}/(n-k-1)}$$
+where $SSR_r$ is the sum of squared residuals from our unrestricted model, $SSR_{ur}$ is the sum of squared residuals from the restricted and q is the difference in the degrees of freedom between the unrestricted and restricted model.
 
 ## 7 - Estimate the model using FGLS and comment on the results.
 
