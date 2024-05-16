@@ -1,0 +1,57 @@
+---
+title: "Exam 3"
+author: "Johan Bysted"
+date: "2024-05-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr); library(texreg); library(AER)
+data3 <- read_csv("data3.csv")
+log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- data3$male; black <- data3$ethblack; hisp <- data3$ethhisp; sibling <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
+```
+
+Consider the following model:
+$log(earning) = β0 + β1educ + β2exp + β3male + β4ethblack + β5ethhisp + u$
+
+where earnings are hourly wages in US dollars, educ is education measured in years of schooling, exp is work experience measured in years, male is a gender dummy, ethblack and ethhisp are race dummies for African Americans and Hispanics, respectively.
+Additionally, we have three instruments: mother's education measured in years (meduc), father's education measured in years (feduc), and number of siblings (sibling s).
+
+
+1. Estimate the model using OLS and comment on the results.
+```{r}
+model <- lm(log_earning~educ+exp+male+black+hisp)
+summary(model)
+```
+
+
+2. Why might we be concerned that education is endogenous?
+Given the significant positive relationship between education and earnings, it's important to consider whether this relationship is causal or if endogeneity is biasing the results. The potential endogeneity of education needs to be tested and addressed through methods like instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example could family background influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education (β1) will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
+
+3.Are sibling, meduc, and feduc useful as instruments?
+The instruments meduc, feduc and the number of siblings, are assumed to be correlated with the individual's education but not directly with the error term in the earnings equation.
+
+4. Test whether education is endogenous.
+```{r}
+educ_check <- lm(educ~feduc+sibling+meduc)
+summary(educ_check)
+```
+Since all three variables are significant, it can be argued that they should all be used as instrumental variables:
+
+```{r}
+ivmodel <- ivreg(log_earning~educ+exp+male+black+hisp|feduc+sibling+meduc)
+summary(ivmodel)
+```
+Since the p-value (0.0113) is less than the conventional significance level of 0.05, we reject the null hypothesis that the coefficient for education is equal to zero. Therefore, we can conclude that education is statistically significant in explaining the variation in earnings, even when instrumenting for endogeneity using IV regression.
+
+In summary, based on these IV regression results, education remains statistically significant, suggesting that it has a significant impact on earnings, even after addressing potential endogeneity through instrumental variable estimation.
+
+5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in 
+question 1.
+
+
+6. Perform the overidentification test. What do you conclude?
+
+
+7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
