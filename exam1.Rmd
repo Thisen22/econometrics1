@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Exam 1 - OLS and heteroskedasticity
 
+#INDSÆT MLR ANTAGELSER 
+
 Look at the following model for bank employees wage:
 $$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$
 where salary is yearly wage (in 1000 US dollars), educ is education measured in number of years, salbegin is the starting salary (in 1000 US dollars) for the person's first position in the same bank, male is a dummy variable for gender, minority is one dummy variable indicating whether one belongs to a minority.
@@ -40,15 +42,17 @@ The Q-Q residuals plot shows if the residuals are normally distributed. If the r
 
 The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. In this case, it can be argued that there is an increasing pattern in the spread of the residuals which indicates heteroskedasticity.
 
-The residuals vs leverage plot helps detect outliers in the model. SKRIV FÆRDIG.
+The residuals vs leverage plot helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it seems like there might be an outlier with observation 218 but other than that, most of the observations does not have a large Cook's distance. 
 
 ## 3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
+
+First, the test for heteroskedasticity can be carried out by using the Breusch-Pagan test:
 ```{r}
 r=residuals(model)
 res = r^2
 summary(lm(res~educ + log(salbegin) + male + minority, data = data1))
 ```
-Because the p-value is under 0.05 we reject the null hypothesis meaning that there is heteroskedasticity in the model.
+Because the p-value is 0.007475 which is lower than 0.05, we reject the null hypothesis meaning that there is heteroskedasticity in the model.
 
 We can now calculate the LM test, where we have 474 observations and $R^2=0.1231$:
 ```{r}
@@ -59,19 +63,27 @@ We can then calculate the p-value of chi-square $\chi^2_k$:
 ```{r}
 1-pchisq(LM,4)
 ```
-
+Both the LM and F test reject the null hypothesis meaning there is heteroskedasticity in the model. The Breusch-Pagan test can also be directly run in R using the bptest function which also gives us the p-value.
 
 ```{r}
 library(lmtest)
 bptest(model)
 
 ```
+The special White test can also be used to do the test the model for heteroskedasticity. 
+```{r}
+yhat <- fitted(model)
+quadu <- (residuals(model)^2)
+model_white <- lm(quadu ~ yhat + I(yhat^2))
 
+whitetest <- c("yhat=0", "I(yhat^2)=0")
+linearHypothesis(model_white,whitetest)
+```
+From both the BP test and the special White test it can be seen that the p-value is < 0.05 which means that there is heteroskedasticity in the model.
 
 ## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
-```{r}
 
-```
+
 
 
 ## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
