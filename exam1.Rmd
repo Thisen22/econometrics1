@@ -198,11 +198,9 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 Feasible generalised least squares (FGLS) is a method used to adress heteroskedasticity. It can difficult to know the form of heteroskedasticity (i.e, h($x_i$)). In many cases, it is possible to model the function $h$ and use this data to estimate the unknown parameters. By estimating $h_i$, an estimated value of $h$ is obtained, $\hat{h_i}$. One method to find the exact form of $h_i$ is as follows: $$Var(u|x)=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)$$
 where $x_1,x_2,...,x_k$ are the independent variables in the regression.
 
-
+Since the parameters $\delta$ is unknown for the population, these are estimated using the given data, where $\hat{h}$ can be used to account for heteroskedasticity. To find the estimates for $\delta$, we can use the following. By taking log, the model can be linearised. 
 
 $$u^2=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)v$$
-
-
 
 
 $$log(u^2)=a_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k+e$$
