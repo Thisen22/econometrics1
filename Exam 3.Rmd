@@ -48,37 +48,13 @@ model <- lm(log_earning~educ+exp+male+black+hisp)
 summary(model)
 ```
 
-MANGLER COMMENT 
 
 ##2. Why might we be concerned that education is endogenous?
 
 Given the significant positive relationship between education and earnings, it's important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example could family background influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
 
-
 ##3.Are sibling, meduc, and feduc useful as instruments?
-To find out whether these variables are useful instruments, they have to fulfill two conditions; they need to be correlated with educ and they need to be independent of the error term, $u$:
-$$Cov(x,z)\neq0$$
-$$Cov(z,u)=0$$
-In this case, x is the variable, z is the instruments and u is the error term in the model. If the instruments are correlated with the error term, these are also affected by an endogeneity issue. The instruments need to be uncorrelated with the omitted variable, that creates an endogeneity issue for educ.
-The first condition, $Cov(x,z)\neq0$, can be tested. A model for the variable educ as the dependent variable can be set up. When multiple IVs are used, 2SLS is used:
-$$educ=\pi_0+\pi_1exp+\pi_2male+\pi_3black+\pi_4hisp+\pi_5sib+\pi_6meduc+\pi_7feduc+v$$
-Setting up the hypothesis test:
-$$H_0: \pi_5=\pi_6=\pi_7$$
-$$H_1: \pi_5\neq\pi_6\neq\pi_7$$
-By using F-tests, we can test the hypothesis. F-stat is calculated using the following formula:
-$$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
-```{r}
-sib <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
-ivreg <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
-summary(ivreg)
-```
-It can here be seen, that all thre factors are significant, where especially meduc and feduc is at a good significance level.
-```{r}
-ivtest <- c("sib=0","meduc=0","feduc=0")
-linearHypothesis(ivreg,ivtest)
-```
-Since the p-value < 0.05 $H_0$ is rejected, hence the three variables are statistically significant. Thereby it can be assumed, that the three variables are correlated with education, and can be used as instruments for education.
-
+The instruments meduc, feduc and the number of siblings, are assumed to be correlated with the individual's education but not directly with the error term in the earnings equation.
 
 ##4. Test whether education is endogenous.
 ```{r}
@@ -87,7 +63,14 @@ summary(educ_check)
 ```
 Since all three variables are significant, it can be argued that they should all be used as instrumental variables:
 
+```{r}
+ivmodel <- ivreg(log_earning~educ+exp+male+black+hisp|feduc+sibling+meduc)
+summary(ivmodel)
+```
+Since the p-value (0.0113) is less than the significance level of 0.05, we reject the null hypothesis that the coefficient for education is equal to zero. Therefore, we can conclude that education is statistically significant in explaining the variation in earnings, even when taking account for endogeneity using IV regression.
 
+
+FORELÆSNING 11 (contiuned misspecification) I STARTEN
 
 ##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in 
 question 1.
