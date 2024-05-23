@@ -132,5 +132,5 @@ Then the residuals are regressed on all exogenous variables including the IV's, 
 
 ```
 
-The null hypothesis is that all IV's are uncorrelated with $\u$. $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Calculations for hypothesis testing will be made.
+The null hypothesis is that all IV's are uncorrelated with $\u$. $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
