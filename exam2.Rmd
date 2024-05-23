@@ -241,5 +241,33 @@ So we can write:
 $$y^*=y-e_0$$
 If we substitute $y^*$ into the original model we get:
 $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + (u+e_0)$$
+So we can now see that measurement errors will affect the error term in the model, which will increase the variance of the model and have an effect on the coefficients variance and thereby the estimates of the population values. 
+But is the estimator biased or unbiased in the case of measurement errors?
+We can say that the OLS estimators are unbiased and consistent if the measurement error in the dependent variable is statistically independent of the explanatory variables under the assumption:
+$$E(u)=E(e_0)=0 \qquad  Cov(u,e_0)=0, \quad Cov(e_0,x)=0$$
+If $e_0$ does not have a zero mean, then we will get a biased estimate of the intercept, but the slope would remain the same. 
+If $e_0$ and $u$ are uncorrelated then the variance can be calculated as:
+$$Var(u+e_0)=\sigma^2_u+\sigma^2_e$$
 
 \textbf{Measurement errors in independent variable}
+If we now instead look at a model where we assume a measurement error in one of the independent variables:
+$$y=\beta_0+\beta_1x_1^*+u$$
+The measurement error in $x^*_1$ is given by $e_1=x_1-x^*_1$, where we can isolate the observed variable $x^*_1$, so $x^*_1=x_1-e_1$. We can substitute this into the original model:
+$$y=\beta_0+\beta_1(x_1-e_1)+u$$
+$$y=\beta_0+\beta_1x_1+u-\beta_1e_1$$
+, where $E(u)=E(e)=0$
+
+How measurement errors in independent variables affect OLS estimates depends upon which assumptions you make, and usually there are two extreme assumptions discussed.
+
+\textbf{Assumption 1 - uncorrelated with $x_1$}
+The first assumption is that the measurement error is uncorrelated with the true value $x_1$ and if this is true then the measurement error must be correlated with the observed value $x^*_1$:
+$$Cov(x_1,e_1)=0 \qquad Cov(x^*_1,e_1)\neq0$$
+In this case the regression $y=\beta_0+\beta_1x_1+u-\beta_1e_1$ will be unbiased because it was assumed that the measurement error was not correlated with $x_1$. The estimates of the model therefore be still be consistent and unbiased, but as in the case with measurement error in the dependent variable it will lead to an increase in the variance of the model, because the error term is changed:
+$$Var(u-\beta_1e_1)=\sigma^2_u+\beta_1^2\sigma^2_e$$
+
+\textbf{Assumption 2 - uncorrelated with $x_1^*$}
+The other assumption is when the measurement error instead is uncorrelated with the observed value $x_1^*$ meaning that it must be correlated with the true value $x_1$:
+$$Cov(x_1,e_1)\neq0 \qquad Cov(x^*_1,e_1)=0$$
+In econometrics this particular case is known as classical errors-in-variables (CEV). In this case it would create biased estimators because the measurement error is correlated with the measurement error which means that $x_1$ is also assumed to be correlated with the error term of the model, making it biased and inconsistent.
+
+It should be noted that a measurement error in one of the independent variable will cause bias and inconsistency in all the other included independent variables under assumption 2.
