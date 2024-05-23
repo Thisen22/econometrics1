@@ -47,12 +47,7 @@ educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- 
 ```
 
 
-<<<<<<< HEAD
 ## 1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
-=======
-##1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
-
 Here we use the lm() function to estimate the two models. 
 ```{r}
 library(lmtest)
@@ -75,11 +70,7 @@ The dummy variables show that men earn 4.5% more than female and minorities earn
 
 It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
 
-<<<<<<< HEAD
 ## 2. Carry out graphical model checking of the two models. Which model would you prefer?
-=======
-##2. Carry out graphical model checking of the two models. Which model would you prefer?
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
 ```{r}
 plot(model)
 ```
@@ -100,17 +91,11 @@ From the Q-Q residuals plot it can be seen that the residuals fit the dotted lin
 
 The scale-location plot does not show the same signs of heteroskedasticity as in the first model. The residuals are closer together and are spread more equally around the horizontal line in this model.
 
-<<<<<<< HEAD
-## 3. Examine whether the two models are misspecified using the RESET test.
-=======
 The residuals vs leverage plot does not show any significant outliers as none of the observations have a large enough Cook's distance to be outside of the limits.
 
 Because it fits the four models the best, it can be argued that model 2 would be preferred over model 1.
 
 ##3. Examine whether the two models are misspecified using the RESET test.
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
-The RESET test tests whether there are any non-linear relations in the data, that the original model(s) don't capture. The RESET test accounts for the degrees of freedom by adding non-linear forms of fitted values of Y to the original model, and the significance of the coeffients are tested in an F-test.
-
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
@@ -145,13 +130,7 @@ resettest(model); resettest(model2)
 Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are mis-specified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
 
-<<<<<<< HEAD
 ## 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
-=======
-##4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
-
-
 If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
 
 ```{r}
@@ -188,12 +167,8 @@ resettest(model_ed);resettest(model_ed2)
 ```
 Since the p-values increase, the models are now better specified, and $H_0$ cannot be rejected.
 
-<<<<<<< HEAD
-## 5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
-=======
-##5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
 
+## 5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
 To test the hypothesis $H_0: β_1 = β_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients is statistically significant.
 
 The formula for the F-statistics is:
@@ -245,8 +220,5 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 
 
 ## 6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
-=======
-##6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
->>>>>>> f1c3f2c2bd5471dbaf4ee3d9a725117aa37aefa1
 
 
