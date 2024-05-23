@@ -47,7 +47,7 @@ educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- 
 ```
 
 
-1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
+##1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
 
 Here we use the lm() function to estimate the two models. 
 ```{r}
@@ -71,21 +71,35 @@ The dummy variables show that men earn 4.5% more than female and minorities earn
 
 It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
 
-2. Carry out graphical model checking of the two models. Which model would you prefer?
+##2. Carry out graphical model checking of the two models. Which model would you prefer?
 ```{r}
-plot(model, 2)
+plot(model)
 ```
+The residual vs fitted model shows if the residuals have non-linear patterns. If they are equally spread around a horizontal line without any patterns it indicates that the residuals does not have non-linear patterns. It can be seen that the residuals are not quite spread around a horizontal line but rather a decreasing line.
+
+The Q-Q residuals plot shows if the residuals are normally distributed. If the residuals fit the dotted line they are normally distributed. In this case, the residuals fit the dotted line except in the first and last quantiles where they deviate from the dotted line. They deviate a bit more upwards from the line than downwards. This could indicate that the residuals are approximately normally distributed although not perfectly normally distributed.
+
+The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. In this case, it can be argued that there is an increase in the spread of the residuals which indicates heteroskedasticity.
+
+The residuals vs leverage plot helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it does not seem like there is any observations with a large enough Cook's distance to be outside of the limits. There are some observations quite far apart from the rest but none outside of the limits from the dashed lines.
 
 ```{r}
-plot(model2, 2)
+plot(model2)
 ```
-It seems like model 2 is the better model to describe salary, since the residuals are closer to the linear regression and there are fewer outliers.
+From the residuals vs fitted plot it can be seen that the residuals are more equally spread around the line than in the first model. The line also looks to be more horizontal where the first model showed a more decreasing line.
 
+From the Q-Q residuals plot it can be seen that the residuals fit the dotted line better than the first model although still not perfectly. This indicates that the residuals are approximately normally distributed and at least closer to a normal distribution than the first model.
 
-3. Examine whether the two models are misspecified using the RESET test.
+The scale-location plot does not show the same signs of heteroskedasticity as in the first model. The residuals are closer together and are spread more equally around the horizontal line in this model.
+
+The residuals vs leverage plot does not show any significant outliers as none of the observations have a large enough Cook's distance to be outside of the limits.
+
+Because it fits the four models the best, it can be argued that model 2 would be preferred over model 1.
+
+##3. Examine whether the two models are misspecified using the RESET test.
 The RESET test tests whether there are any non-linear relations in the data, that the original model(s) don't capture. The RESET test accounts for the degrees of freedom by adding non-linear forms of fitted values of Y to the original model, and the significance of the coeffients are tested in an F-test.
 
-The nullhypothesis, $H_0$ is that the model is correctly specified:
+The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
 $$H_1:\delta_1\neq0,\delta_2=0$$
@@ -119,7 +133,7 @@ resettest(model); resettest(model2)
 Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are mis-specified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
 
-4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
+##4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
 
 
 If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
@@ -158,11 +172,11 @@ resettest(model_ed);resettest(model_ed2)
 ```
 Since the p-values increase, the models are now better specified, and $H_0$ cannot be rejected.
 
-5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
+##5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
 
 To test the hypothesis $H_0: β_1 = β_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients is statistically significant.
 
 
-6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
+##6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
 
 
