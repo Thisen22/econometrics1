@@ -2,7 +2,9 @@
 title: "exam1"
 author: "Mathias Kold"
 date: "2024-04-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,10 +13,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Exam 1 - OLS and heteroskedasticity
 
-#INDSÆT MLR ANTAGELSER 
+In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
+
+**MLR1:** Linear in Parameters
+The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+
+**MLR2:** Random Sampling
+We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+
+**MLR3:** No Perfect Collinearity
+In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
+
+**MLR4:** Zero Conditional Mean
+The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+
+**MLR5:** Homoskedasticity
+The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+
+**MLR6:** Normality
+The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
 Look at the following model for bank employees wage:
-$$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$
+$$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$ 
 where salary is yearly wage (in 1000 US dollars), educ is education measured in number of years, salbegin is the starting salary (in 1000 US dollars) for the person's first position in the same bank, male is a dummy variable for gender, minority is one dummy variable indicating whether one belongs to a minority.
 
 ## 1 - Estimate the model using OLS. Comment on the output and interpret the results
@@ -100,7 +121,7 @@ $\beta_2$ is the estimate for the starting salary's effect on the the yearly sal
 
 To test our null hypothesis against the alternative hypothesis we use the t-statistics, which is given by:
 $$t_{{\hat\beta}_j}=\frac{\hat{\beta_j}-1}{se(\hat{\beta_j})}$$
-We will perform a two-side test, so the decision rule will be $|t_{{\hat\beta}_j}|>c$, meaning that the null hypothesis will be rejected if the absolute value of t-statistics is greater than the critical value.
+We will perform a two-sided test, so the decision rule will be $|t_{{\hat\beta}_j}|>c$, meaning that the null hypothesis will be rejected if the absolute value of t-statistics is greater than the critical value.
 
 To perform the test we use our estimate $\hat{\beta_2}$ from 1.1.
 ```{r}
