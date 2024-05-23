@@ -23,6 +23,9 @@ options(scipen = 999)
 library(readr)
 library(foreign)
 library(car)
+library(sandwich)
+library(lmtest)
+library(texreg)
 data1 <- read_csv("data1.csv")
 model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
@@ -84,9 +87,13 @@ linearHypothesis(model_white,whitetest)
 From both the BP test and the special White test it can be seen that the p-value is < 0.05 which means that there is heteroskedasticity in the model.
 
 ## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
-
-
-
+Since there is heteroskedasticity in the model, it is necessary to take this into account, when performing a linear regression. A valid estimator of multiple linear regression in the presence of heteroskedasticity is $$Var(\hat{\beta_j})=\frac{\sum\limits_{i=0}^n\hat{r}^2_{ij}\cdot\hat{u}^2_i}{(SSR_j)^2}$$
+where $\hat{r}_{ij}$ denotes the $i$th residual from regressing $x_j$ on all other independent variables. The robust standard error is obtained by taking the square root of the above equation. R can calculate the robust standard errors using coeftest():
+```{r}
+coef_model <- coeftest(model, vcov=vcovHC(model,type="HC0"))
+screenreg(list(OLS=model,Standard_Robust_Error=coef_model), digits=4)
+```
+It can be seen that the estimates from the two models are the same, which is expected, because we try to account for the non-constant variance of the error term in the OLS-model. Hence, it is only the standard errors that change. Furthermore, the significance level does not change, when performing a, when adjusting for heteroskedasticity. The robust standard errors can be used to perform hypothesis testing and to calculate confidence intervals. Even when adjusting for heteroskedasticity, the conclusion from the regressions does not change, since the estimates are the same, and there are no significant changes. 
 
 ## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
 $\beta_2$ is the estimate for the starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that the starting salary has an effect on the yearly salary. (MAYBE COMMENT ON WHAT KIND OF EFFECT!).
@@ -167,5 +174,16 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 
 
 ## 7 - Estimate the model using FGLS and comment on the results.
+Feasible generalised least squares (FGLS) is a method used to adress heteroskedasticity. It can difficult to know the form of heteroskedasticity (i.e, h($x_i$)). In many cases, it is possible to model the function $h$ and use this data to estimate the unknown parameters. By estimating $h_i$, an estimated value of $h$ is obtained, $\hat{h_i}$. One method to find the exact form of $h_i$ is as follows: $$Var(u|x)=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)$$
+where $x_1,x_2,...,x_k$ are the independent variables in the regression.
+
+
+
+$$u^2=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)v$$
+
+
+
+
+$$log(u^2)=a_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k+e$$
 
 ## 8 - Has the FGLS estimation taken into account all the heteroskedasticity?
