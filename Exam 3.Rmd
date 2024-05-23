@@ -47,7 +47,11 @@ Additionally, we have three instruments: mother's education measured in years (m
 model <- lm(log_earning~educ+exp+male+black+hisp)
 summary(model)
 ```
+From the model, it can be seen that the education variable has an estimate of 0.124220 which means that one extra year of education will raise the hourly wage by approximately 12.42%. The experience variable has an estimate of 0.033882 which means that one more year of experience will raise the hourly wage by approximately 3.39%. The male variable has an estimate of 0.293449 which means that if you are a male your hourly wage will be approximately 29.34% higher than if you are a woman. The black variable has an estimate of -0.19567 which means that African Americans approximately will have 19.57% lower hourly wages than non-African Americans. The Hispanics variable has an estimate of -0.097406 which means that Hispanic approximately will have 9.74% lower hourly wages than non-Hispanics.
 
+The intercept is 0.396226 which is the value of the dependent variable, in this case hourly wage in US dollars, when all other variables have a value of 0.
+
+It can also be seen that all the variables except the hispanic variable are statistically significant at a 5% significance level due to p-values < 0.05. They are also significant at a 1% significance level.
 
 ##2. Why might we be concerned that education is endogenous?
 
