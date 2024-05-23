@@ -206,7 +206,7 @@ We then calculate our critical values of the F-statistics at 5% significance lev
 qf(0.95, 2, 450-5-1)
 ```
 
-Our decision rule says that if F > c then we reject our null hypothesis and instead accepting our alternative hypothesis meaning that $\beta_1$ and $\beta_5$ does have a statistically impact on yearly salary in both of our models. 
+Our decision rule says that if F > c then we reject our null hypothesis and instead accepting our alternative hypothesis meaning that $\beta_1$ and $\beta_5$ for the education does have a statistically impact on yearly salary in both of our models. 
 
 It is also possible to do the test directly in R by using the following code:
 ```{r}
@@ -220,5 +220,21 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 
 
 ## 6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
+It is of course possible that there could be some kind og measurement errors in the two models. Sometimes, it is difficult to collect data that truly reflects the correct value. If we think of the dependent variable in this model, which is income, then there can be different problems depending on how the data is collected. If it is taking from tax register, then it might not reflect the truly value of peoples income, because some might have a larger income if they done some kind of undeclared work that is not registered. If the data is obtained by going around and asking people about their income then there might be a difference between what they tell and their actual income. 
 
+There can also be some problems with the independent variables in the model. Some people might lie about their education, or some can have problems remembering how many years of experience they have. 
+For all variables that is included and especially data that reflects economic behavior it can be very difficult to obtain true and reliable data and avoid the above mentioned measurement errors. 
 
+We can look at the two different scenarios and what kind of effects it can have in the model, when there is a measurement error in the dependent variable or in the independent variable. 
+
+\textbf{Measurement errors in dependent variable}
+We assume the following model has measurement errors in the dependent variable:
+$$y^* = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+Where the measurement error is given by difference between the observed $y^*$ and the true $y$:
+$$e_0=y-y^*$$
+So we can write:
+$$y^*=y-e_0$$
+If we substitute $y^*$ into the original model we get:
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + (u+e_0)$$
+
+\textbf{Measurement errors in independent variable}
