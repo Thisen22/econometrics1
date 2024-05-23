@@ -54,7 +54,6 @@ summary(model)
 Given the significant positive relationship between education and earnings, it's important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example could family background influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
 
 ##3.Are sibling, meduc, and feduc useful as instruments?
-<<<<<<< HEAD
 To find out whether these variables are useful instruments, they have to fulfill two conditions; they need to be correlated with educ and they need to be independent of the error term, $u$:
 $$Cov(x,z)\neq0$$
 $$Cov(z,u)=0$$
@@ -78,30 +77,23 @@ linearHypothesis(ivreg,ivtest)
 ```
 Since the p-value < 0.05 $H_0$ is rejected, hence the three variables are statistically significant. Thereby it can be assumed, that the three variables are correlated with education, and can be used as instruments for education.
 
-=======
-The instruments meduc, feduc and the number of siblings, are assumed to be correlated with the individual's education but not directly with the error term in the earnings equation.
->>>>>>> e0cc8d44461a3a567966a3375097e5d371cdb4f1
 
 ##4. Test whether education is endogenous.
-```{r}
-educ_check <- lm(educ~feduc+sibling+meduc)
-summary(educ_check)
-```
-Since all three variables are significant, it can be argued that they should all be used as instrumental variables:
+First we find the reduced form residuals from the linear regression including the three Instrument Variables. The reduced form residuals is denoted as $\hat{v}$. $\hat{v}$ is then included in the original OLS model, and if the residuals are significant, it means that there is an endogeneity issue:
+$y_1=\beta_0+\beta_1y_2+\beta_2x_1+\beta_3x_2+\delta v + error$ Thereby we get the nullhypothesis:
+$$H_0: \delta=0 $$
 
 ```{r}
-ivmodel <- ivreg(log_earning~educ+exp+male+black+hisp|feduc+sibling+meduc)
-summary(ivmodel)
+res <- ivreg$residuals
+res_mod <- lm(log_earning~educ+exp+male+black+hisp+res)
+coeftest(res_mod)
 ```
-Since the p-value (0.0113) is less than the significance level of 0.05, we reject the null hypothesis that the coefficient for education is equal to zero. Therefore, we can conclude that education is statistically significant in explaining the variation in earnings, even when taking account for endogeneity using IV regression.
+Since residuals are not significant,we fail to reject $H_0$, and we thereby we cannot conclude that there is an endogeneity issue. This does not mean that educ does not have an endogeneity issue, but for these IV variables there is not.
 
-
-FORELÆSNING 11 (contiuned misspecification) I STARTEN
-
-##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in 
-question 1.
-
-
+##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
+The p-value of 0.11 is not sufficient to reject that there is an endogeneity issue, why it is deemed necessary to further examine if there is an issue. To accomodate this issue, we use the 2SLS method. A regression on this form is set up:
+$$y_1=\beta_0+\beta_1y_2+\beta_2exp+\beta_3male+\beta_4black+\beta_5hisp+u$$
+where $y_2$=educ. 
 
 
 ##6. Perform the overidentification test. What do you conclude?
