@@ -228,6 +228,7 @@ And then we can estimate the FGLS:
 FGLS <- lm(log(salary) ~ educ + log(salbegin) + male + minority, weight=1/w, data = data1)
 summary(FGLS)
 summary(model)
+screenreg(list(OLS=model, FLGS=FGLS), digits=4)
 ```
 
 
