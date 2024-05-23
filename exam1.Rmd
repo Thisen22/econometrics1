@@ -168,4 +168,28 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 
 ## 7 - Estimate the model using FGLS and comment on the results.
 
+
+We already know from 1.3 that our model has heteroskedasticity problems, so we obtain our squared residuals from our OLS model and log them:
+```{r}
+logu2 <- log(resid(model)^2)
+```
+
+So now we run the regression on the form mentioned earlier:
+```{r}
+varreg <- lm(logu2 ~ educ + log(salbegin) + male + minority, data = data1)
+```
+
+After we calculate the weights by exponentiating the fitted values from varreg:
+```{r}
+w <- exp(fitted(varreg))
+```
+
+And then we can estimate the FGLS:
+```{r}
+FGLS <- lm(log(salary) ~ educ + log(salbegin) + male + minority, weight=1/w, data = data1)
+summary(FGLS)
+summary(model)
+```
+
+
 ## 8 - Has the FGLS estimation taken into account all the heteroskedasticity?
