@@ -12,6 +12,29 @@ data3 <- read_csv("data3.csv")
 log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- data3$male; black <- data3$ethblack; hisp <- data3$ethhisp; sibling <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ```
 
+## Exam 3 - Instrumental variables
+
+In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
+
+**MLR1:** Linear in Parameters
+The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+
+**MLR2:** Random Sampling
+We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+
+**MLR3:** No Perfect Collinearity
+In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
+
+**MLR4:** Zero Conditional Mean
+The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+
+**MLR5:** Homoskedasticity
+The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+
+**MLR6:** Normality
+The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+
 Consider the following model:
 $log(earning) = β0 + β1educ + β2exp + β3male + β4ethblack + β5ethhisp + u$
 
@@ -19,7 +42,7 @@ where earnings are hourly wages in US dollars, educ is education measured in yea
 Additionally, we have three instruments: mother's education measured in years (meduc), father's education measured in years (feduc), and number of siblings (sibling s).
 
 
-1. Estimate the model using OLS and comment on the results.
+##1. Estimate the model using OLS and comment on the results.
 ```{r}
 model <- lm(log_earning~educ+exp+male+black+hisp)
 summary(model)
@@ -27,14 +50,14 @@ summary(model)
 
 MANGLER COMMENT 
 
-2. Why might we be concerned that education is endogenous?
+##2. Why might we be concerned that education is endogenous?
 
 Given the significant positive relationship between education and earnings, it's important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example could family background influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
 
-3.Are sibling, meduc, and feduc useful as instruments?
+##3.Are sibling, meduc, and feduc useful as instruments?
 The instruments meduc, feduc and the number of siblings, are assumed to be correlated with the individual's education but not directly with the error term in the earnings equation.
 
-4. Test whether education is endogenous.
+##4. Test whether education is endogenous.
 ```{r}
 educ_check <- lm(educ~feduc+sibling+meduc)
 summary(educ_check)
@@ -50,13 +73,13 @@ Since the p-value (0.0113) is less than the significance level of 0.05, we rejec
 
 FORELÆSNING 11 (contiuned misspecification) I STARTEN
 
-5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in 
+##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in 
 question 1.
 
 
 
 
-6. Perform the overidentification test. What do you conclude?
+##6. Perform the overidentification test. What do you conclude?
 
 
-7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
+##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
