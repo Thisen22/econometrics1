@@ -123,7 +123,7 @@ Setting the new 2SLS and the OLS up:
 ```{r}
 screenreg(list(OLS=model,TwoSLS=sls), digits=4)
 ```
-It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and afro american as well as hispanic falls. Male and experience does not really change.
+It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and afro american as well as hispanic falls. Male and experience does not really change. 
 
 ##6. Perform the overidentification test. What do you conclude?
 
