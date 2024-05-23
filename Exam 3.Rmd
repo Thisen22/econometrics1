@@ -72,7 +72,7 @@ sib <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ivreg <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
 summary(ivreg)
 ```
-It can here be seen, that all thre factors are significant, where especially meduc and feduc is at a good significance level.
+It can here be seen, that all three factors are significant, where especially meduc and feduc is at a good significance level.
 ```{r}
 ivtest <- c("sib=0","meduc=0","feduc=0")
 linearHypothesis(ivreg,ivtest)
