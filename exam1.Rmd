@@ -226,10 +226,22 @@ w <- exp(fitted(varreg))
 And then we can estimate the FGLS:
 ```{r}
 FGLS <- lm(log(salary) ~ educ + log(salbegin) + male + minority, weight=1/w, data = data1)
-summary(FGLS)
-summary(model)
 screenreg(list(OLS=model, FLGS=FGLS), digits=4)
 ```
-
+It can be seen that the standard error for the different variables have been changed a bit, but nothing significant. It is very small changes, which maybe could indicate that the FGLS estimation have not taken into account all the heteroskedasticity. This will be elaborated further in 1.8.
 
 ## 8 - Has the FGLS estimation taken into account all the heteroskedasticity?
+There are more ways to check whether the FGLS estimation has taken all the heteroskedasticity into account. One way is to look at it graphically and another is by doing a BP-test.
+
+We start by looking at it graphically in the Scale-Location plot:
+```{r}
+plot(FGLS, 3)
+```
+
+Then we perform a BP-test:
+```{r}
+bptest(FGLS)
+```
+
+Both the plot and BP-test indicates that the FGLS estimation have not taken all of the heteroskedasticity into account. In the plot it looks like there is a slight upward trend and that the spread of the residuals increase with higher fitted values. This suggest that the variance of the residuals is not constant indicating heteroskedasticity. As mentioned in 1.3 the null hypothesis in a BP-test is homoskedasticity, but we reject the null hypothesis here, since p-value is > 0.05.
+
