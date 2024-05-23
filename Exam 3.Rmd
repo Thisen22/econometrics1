@@ -129,3 +129,4 @@ It can be seen, that when using the 2SLS, the estimate for educ increases a bit,
 
 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
+We perform the 2SLS method again as in 3.5, but this time 
