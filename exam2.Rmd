@@ -91,7 +91,7 @@ And the alternative hypothesis is:
 $$H_1:\delta_1\neq0,\delta_2=0$$
 First we use the values found from the two models to find our yhat for model and model2.
 Setting up the new models to perform a RESET test:
-$y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$
+$$y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$$
 where $\hat{y}$ is the fitted value from the original model. $\hat{y}^2$ and $\hat{y}^3$ will capture any nonlinearities, if present in the model.
 ```{r}
 yhat1 <- -6.93228 + 0.99327*educ + 1.60816*salbegin + 1.83088*male - 1.72539*minority
@@ -122,20 +122,13 @@ Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_
 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
 
 
-If it is still assumed, that the model is mis-specified, then it could be argued that leaving out the squared 
+If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
 
 ```{r}
 model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
 summary(model_ed)
 ```
 
-
-If it is still assumed, that the model is mis-specified, then it could be argued that leaving out the squared 
-
-```{r}
-model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
-summary(model_ed)
-```
 
 ```{r}
 model_ed2 <- lm(log(salary)~educ+log(salbegin)+male+minority+I(educ^2))
@@ -159,7 +152,11 @@ Comparing for log(salary):
 ```{r}
 screenreg(list(Model2=model2, Model2_ed2=model_ed2), digits=5)
 ```
-For these, the same pattern can be observed. Education will affect negatively for short education, while a long education will affect your salary positively. 
+For these, the same pattern can be observed. Education will affect negatively for short education, while a long education will affect your salary positively. Both models has a convex shape, where education will affect negatively on the short run, but there is an accelerating effect, as you keep studying. By performing RESET tests for the models including $educ^2$, we can find out whether the models are better specified.
+```{r}
+resettest(model_ed);resettest(model_ed2)
+```
+Since the p-values increase, the models are now better specified, and $H_0$ cannot be rejected.
 
 5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
 
