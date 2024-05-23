@@ -134,4 +134,13 @@ Then the residuals are regressed on all exogenous variables including the IV's, 
 
 The null hypothesis is that all IV's are uncorrelated with $\u$. $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
-We perform the 2SLS method again as in 3.5, but this time 
+We perform the 2SLS method again as in 3.5, but this time with only meduc and feduc as instrumental variables, and we do it directly with the code in R:
+```{r}
+sls2 <- ivreg(log_earning~educ+exp+male+black+hisp|exp+male+black+hisp+feduc+meduc)
+```
+
+To look whether it changes our conclusions we print it together with the OLS from 3.1 and the 2SLS from 3.5:
+```{r}
+screenreg(list(OLS=model, SLS3_5 = sls, SLS3_7=sls2), digits = 4)
+```
+
