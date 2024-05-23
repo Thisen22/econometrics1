@@ -2,7 +2,9 @@
 title: "exam1"
 author: "Mathias Kold"
 date: "2024-04-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,10 +13,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Exam 1 - OLS and heteroskedasticity
 
-#INDSÆT MLR ANTAGELSER 
+In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
+
+**MLR1:** Linear in Parameters
+The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+
+**MLR2:** Random Sampling
+We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+
+**MLR3:** No Perfect Collinearity
+In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
+
+**MLR4:** Zero Conditional Mean
+The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+
+**MLR5:** Homoskedasticity
+The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+
+**MLR6:** Normality
+The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
 Look at the following model for bank employees wage:
-$$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$
+$$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$ 
 where salary is yearly wage (in 1000 US dollars), educ is education measured in number of years, salbegin is the starting salary (in 1000 US dollars) for the person's first position in the same bank, male is a dummy variable for gender, minority is one dummy variable indicating whether one belongs to a minority.
 
 ## 1 - Estimate the model using OLS. Comment on the output and interpret the results
@@ -23,6 +44,9 @@ options(scipen = 999)
 library(readr)
 library(foreign)
 library(car)
+library(sandwich)
+library(lmtest)
+library(texreg)
 data1 <- read_csv("data1.csv")
 model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
@@ -84,16 +108,20 @@ linearHypothesis(model_white,whitetest)
 From both the BP test and the special White test it can be seen that the p-value is < 0.05 which means that there is heteroskedasticity in the model.
 
 ## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
-
-
-
+Since there is heteroskedasticity in the model, it is necessary to take this into account, when performing a linear regression. A valid estimator of multiple linear regression in the presence of heteroskedasticity is $$Var(\hat{\beta_j})=\frac{\sum\limits_{i=0}^n\hat{r}^2_{ij}\cdot\hat{u}^2_i}{(SSR_j)^2}$$
+where $\hat{r}_{ij}$ denotes the $i$th residual from regressing $x_j$ on all other independent variables. The robust standard error is obtained by taking the square root of the above equation. R can calculate the robust standard errors using coeftest():
+```{r}
+coef_model <- coeftest(model, vcov=vcovHC(model,type="HC0"))
+screenreg(list(OLS=model,Standard_Robust_Error=coef_model), digits=4)
+```
+It can be seen that the estimates from the two models are the same, which is expected, because we try to account for the non-constant variance of the error term in the OLS-model. Hence, it is only the standard errors that change. Furthermore, the significance level does not change, when performing a, when adjusting for heteroskedasticity. The robust standard errors can be used to perform hypothesis testing and to calculate confidence intervals. Even when adjusting for heteroskedasticity, the conclusion from the regressions does not change, since the estimates are the same, and there are no significant changes. 
 
 ## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
 $\beta_2$ is the estimate for the starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that the starting salary has an effect on the yearly salary. (MAYBE COMMENT ON WHAT KIND OF EFFECT!).
 
 To test our null hypothesis against the alternative hypothesis we use the t-statistics, which is given by:
 $$t_{{\hat\beta}_j}=\frac{\hat{\beta_j}-1}{se(\hat{\beta_j})}$$
-We will perform a two-side test, so the decision rule will be $|t_{{\hat\beta}_j}|>c$, meaning that the null hypothesis will be rejected if the absolute value of t-statistics is greater than the critical value.
+We will perform a two-sided test, so the decision rule will be $|t_{{\hat\beta}_j}|>c$, meaning that the null hypothesis will be rejected if the absolute value of t-statistics is greater than the critical value.
 
 To perform the test we use our estimate $\hat{\beta_2}$ from 1.1.
 ```{r}
@@ -167,6 +195,17 @@ Using the code in R to perform the F-statistics gives us the some answer as befo
 
 
 ## 7 - Estimate the model using FGLS and comment on the results.
+Feasible generalised least squares (FGLS) is a method used to adress heteroskedasticity. It can difficult to know the form of heteroskedasticity (i.e, h($x_i$)). In many cases, it is possible to model the function $h$ and use this data to estimate the unknown parameters. By estimating $h_i$, an estimated value of $h$ is obtained, $\hat{h_i}$. One method to find the exact form of $h_i$ is as follows: $$Var(u|x)=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)$$
+where $x_1,x_2,...,x_k$ are the independent variables in the regression.
+
+
+
+$$u^2=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)v$$
+
+
+
+
+$$log(u^2)=a_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k+e$$
 
 
 We already know from 1.3 that our model has heteroskedasticity problems, so we obtain our squared residuals from our OLS model and log them:
