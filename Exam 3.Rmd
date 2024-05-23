@@ -97,12 +97,7 @@ Since residuals are not significant,we fail to reject $H_0$, and we thereby we c
 ##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
 The p-value of 0.11 is not sufficient to reject that there is an endogeneity issue, why it is deemed necessary to further examine if there is an issue. To accomodate this issue, we use the 2SLS method. A regression on this form is set up:
 $$y_1=\beta_0+\beta_1y_2+\beta_2exp+\beta_3male+\beta_4black+\beta_5hisp+u$$
-where $y_2$=educ, the variable that is suspected to have endogeneity. Now, a regression for educ($y_2$) is made. The three IV's for educ is added in the regression:
-$$y_2=\pi_0+\pi_1exp+\pi_2male+\pi_3black+\pi_4hisp+\pi_5sib+\pi_6meduc+\pi_7feduc+v$$
-In this regression, the following assumptions is expected to be fulfilled:
-\itemize{$E(v)=0$. The mean of the error term is 0, which indicates unbiasedness.}
-\itemize{$Cov(x,v)=0$. This applies for all variables in the original model.}
-\itemize{$Cov(z,v)=0$. The IV's should be independent of the error term.}
+where $y_2$=educ. 
 
 ```{r}
 stage1 <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
@@ -123,10 +118,20 @@ Setting the new 2SLS and the OLS up:
 ```{r}
 screenreg(list(OLS=model,TwoSLS=sls), digits=4)
 ```
-It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and afro american as well as hispanic falls. Male and experience does not really change.
+It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and afro american as well as hispanic falls. Male and experience does not really change. 
+
 
 ##6. Perform the overidentification test. What do you conclude?
+First,  the 2SLS residuals, $\hat{u}$, from the earlier estimated 2SLS model are obtained. 
+```{r}
 
+```
 
+Then the residuals are regressed on all exogenous variables including the IV's, where R-squared, $$R^2_1$$ is obtained.
+```{r}
+
+```
+
+The null hypothesis is that all IV's are uncorrelated with $\u$. $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
 We perform the 2SLS method again as in 3.5, but this time 
