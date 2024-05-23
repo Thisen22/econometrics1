@@ -47,8 +47,7 @@ educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- 
 ```
 
 
-##1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
-
+## 1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
 Here we use the lm() function to estimate the two models. 
 ```{r}
 library(lmtest)
@@ -76,7 +75,7 @@ It can also be seen that all the variables are statistically significant at a 5%
 
 It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
 
-##2. Carry out graphical model checking of the two models. Which model would you prefer?
+## 2. Carry out graphical model checking of the two models. Which model would you prefer?
 ```{r}
 plot(model)
 ```
@@ -102,8 +101,6 @@ The residuals vs leverage plot does not show any significant outliers as none of
 Because it fits the four models the best, it can be argued that model 2 would be preferred over model 1.
 
 ##3. Examine whether the two models are misspecified using the RESET test.
-The RESET test tests whether there are any non-linear relations in the data, that the original model(s) don't capture. The RESET test accounts for the degrees of freedom by adding non-linear forms of fitted values of Y to the original model, and the significance of the coeffients are tested in an F-test.
-
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
@@ -138,9 +135,7 @@ resettest(model); resettest(model2)
 Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are mis-specified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
 
-##4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
-
-
+## 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $β_5$). Briefly comment on the output, and perform the RESET test again.
 If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
 
 ```{r}
@@ -177,11 +172,58 @@ resettest(model_ed);resettest(model_ed2)
 ```
 Since the p-values increase, the models are now better specified, and $H_0$ cannot be rejected.
 
-##5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
 
+## 5. Test the hypothesis $H_0: β_1 = β_5 = 0$ in both models (from question 4).
 To test the hypothesis $H_0: β_1 = β_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients is statistically significant.
 
+The formula for the F-statistics is:
+$$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
+where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
 
-##6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
+<<<<<<< HEAD
+The two unrestricted models are given in exercise 2.4, so what we need to do is estimate our two restricted models, that looks like the following:
+$$salary=\beta_0+\beta_2salbegin+\beta_3male+\beta_4minority+u$$
+$$log(salary)=\beta_0++\beta_2log(salbegin)+\beta_3male+\beta_4minority+u$$
+```{r}
+model_r <- lm(salary ~ salbegin + male + minority, data = data2)
+model_r2 <- lm(log(salary) ~ log(salbegin) + male + minority, data = data2)
+```
+
+We then obtain our $R^2$ from the restricted and unrestriced models:
+```{r}
+r2_ur <- summary(model_ed)$r.squared
+r2_r <- summary(model_r)$r.squared
+
+r2_ur2 <- summary(model_ed2)$r.squared
+r2_r2 <- summary(model_r2)$r.squared
+```
+
+We now have what we need to calculate our F-statistics:
+```{r}
+F1 <- (r2_ur-r2_r)/(1-r2_ur) * (450-5-1)/2
+F2 <- (r2_ur2-r2_r2)/(1-r2_ur2) * (450-5-1)/2
+F1
+F2
+```
+
+We then calculate our critical values of the F-statistics at 5% significance level:
+```{r}
+qf(0.95, 2, 450-5-1)
+```
+
+Our decision rule says that if F > c then we reject our null hypothesis and instead accepting our alternative hypothesis meaning that $\beta_1$ and $\beta_5$ does have a statistically impact on yearly salary in both of our models. 
+
+It is also possible to do the test directly in R by using the following code:
+```{r}
+myh0 <- c("educ=0", "I(educ^2)=0")
+linearHypothesis(model_ed, myh0)
+linearHypothesis(model_ed2, myh0)
+
+```
+
+Using the code in R to perform the F-statistics gives us the some answer as before still confirming the rejecting of our null hypothesis.
+
+
+## 6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
 
 

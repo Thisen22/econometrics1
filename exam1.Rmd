@@ -156,7 +156,7 @@ So at a 5% significance level the p-value also tells us to reject the null hypot
 ## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
 When we want to test multiple hypothesis we turn to the F-statistics, where we uses this formula:
 $$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
-where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted and q is the difference in the degrees of freedom between the unrestricted and restricted model.
+where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
 
 In our case the unrestricted model is the one given in the beginning of assignment 1.1 with all the independent variables, and in the case where we want to test the null hypothesis $H_0: \beta_3 = \beta_4 = 0$, we then get our restricted model:
 $$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+u$$
