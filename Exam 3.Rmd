@@ -124,13 +124,24 @@ It can be seen, that when using the 2SLS, the estimate for educ increases a bit,
 ##6. Perform the overidentification test. What do you conclude?
 First,  the 2SLS residuals, $\hat{u}$, from the earlier estimated 2SLS model are obtained. 
 ```{r}
-
+resid2sls <- resid(sls)
 ```
 
 Then the residuals are regressed on all exogenous variables including the IV's, where R-squared, $$R^2_1$$ is obtained.
 ```{r}
-
+res.aux <- lm(resid2sls ~ exp + male + black + hisp + sib + meduc + feduc)
 ```
 
-The null hypothesis is that all IV's are uncorrelated with $\u$. $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
+The null hypothesis is that all IV's are uncorrelated with $\u$:
+$$H_0: \operatorname{Corr}(Z,u) = 0, \quad \text{hvor} \quad Z = (z_1, z_2, z_3). $$
+We use $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
+```{r}
+r2 <- summary(res.aux)$r.squared
+n <- nobs(res.aux)
+teststat <- n*r2
+pval <- 1-pchisq(teststat,df=2)
+pval
+```
+From the calculated p-value, $\H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
+
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
