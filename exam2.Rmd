@@ -59,15 +59,20 @@ model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 ```{r}
 summary(model)
 ```
-From the first model it can be seen that all variables except for "minority" are significant at a 5% level. The intercept is almost -7, and minority affects salary negative as well. The rest of the variables will affect the salary positive.
-The dummy variables show that men earn 1.83 dollars more than females and minorities earn 1.73 less than non-minorities.
+The education variable has an estimate of 0.99327 which means that one extra year of education will raise the annual salary by approximately 993 dollars. The salbegin variable has an estimate of 1.60816 which means that one more unit (1000 dollars) of starting salary will give 1.60816 more units (1608.16 dollars) of annual salary. The male variable has an estimate of 1.83088 which means that if you are a male your annual salary will be 1.83088 units (1830.88 dollars) higher than if you are a woman. The minority variable has an estimate of -1.72539 which means that if you are a minority your annual salary will be 1.72539 units (1725.39 dollars) lower than if you are not a minority.
+
+The intercept is -6.93228 which is the value of the dependent variable, in this case annual salary (in 1000 dollars), when all other variables have a value of 0. In this case a negative intercept does not really make sense since salary can not be negative.
+
+It can also be seen that all the variables except minority variable are statistically significant at a 5% significance level due to p-values < 0.05. Education and salbegin are also significant at a 1% significance level while the male variable is not.
 
 ```{r}
 summary(model2)
 ```
-From model 2 it can be seen that all variables are significant at a 5% level, and intercept, education and log(salbegin) are significant at a .1% level.
-All variables except minority is positive. 
-The dummy variables show that men earn 4.5% more than female and minorities earn 4.2% less than non-minorities.
+In the second model, it can be seen that the education variable has an estimate of 0.023578 which means that one extra year of education will raise the annual salary by approximately 2.36%. The log(salbegin) variable has an estimate of 0.820725. Since it is in log form, it means that a 1% increase in the starting salary will raise the annual salary by approximately 0.821%. The male variable has an estimate of 0.045474 which means that your annual salary will be approximately 4.55% higher if you are a male than if you are a woman. The minority variable has an estimate of -0.041856 which means that if you are a minority your annual salary will be approximately 4.19% lower than if you are not a minority.
+
+The intercept is 0.84913 which is the value of the dependent variable, in this case annual salary (in 1000 dollars), when all other variables have a value of 0. 
+
+It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05. Only education and log(salbegin) are significant at a 1% significance level.
 
 It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
 
