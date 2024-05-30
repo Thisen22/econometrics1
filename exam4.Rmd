@@ -9,4 +9,55 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
+
+**MLR1:** Linear in Parameters
+The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+
+**MLR2:** Random Sampling
+We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+
+**MLR3:** No Perfect Collinearity
+In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
+
+**MLR4:** Zero Conditional Mean
+The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+
+**MLR5:** Homoskedasticity
+The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+
+**MLR6:** Normality
+The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+
+In this assignment, we investigate the factors that influence whether women in Switzerland participate in the labor force
+
+The dependent variable is participation, a binary variable that measures whether the person is part of the labor force. Additionally, we have seven explanatory variables: income that is not work-related measured in 1000 CHF (income), age (age), age squared (agesq), education measured in years (educ), number of children under 7 years old (youngkids), number of children over 7 years old (oldkids), and a dummy variable indicating whether the person is a foreigner (foreign).
+
+The dataset data4 contains these variables measured for 872 Swiss women.
+
 ## Exam 4 - Models for binary variables
+
+##1. Set up a linear regression model for participation where you use the described explanatory variables.
+
+###(a) Estimate the model using OLS and comment on the results.
+
+###(b) Test whether the partial effect of education is different from zero.
+
+###(c) Test whether the partial effect of age is different from zero.
+
+##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
+
+###(a) Estimate the models.
+
+###(b) Test whether the partial effect of education is different from zero.
+
+###(c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
+
+##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
+
+##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
+
+##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
+
+##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
