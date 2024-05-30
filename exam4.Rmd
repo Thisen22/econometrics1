@@ -2,7 +2,9 @@
 title: "exam4"
 author: "Mathias Kold"
 date: "2024-05-30"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -266,5 +268,5 @@ PCP <- c(lmp_pcp, logit_pcp, probit_pcp)
 names(PCP) <- c("LMP PCP", "Logit PCP", "Probit PCP")
 PCP
 ```
-It can be seen that the three models are almost equally good at predicting. The logit and probit models only predict marginally better at 68.12%, while the LPM corretly predicts 67.43%. 
+It can be seen that the three models are almost equally good at predicting. The logit and probit models only predict marginally better at 68.12%, while the LPM correctly predicts 67.43%. 
 
