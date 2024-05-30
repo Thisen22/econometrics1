@@ -63,7 +63,7 @@ The foreign variable has an estimate of 0.2572106 which means that you have appr
 
 The intercept is -0.0035163 which is the value of the dependent variable, in this case participation in the labor force, when all other variables have a value of 0.
 
-It can also be seen that all the variables except educaation are statistically significant at a 5% significance level due to p-vaalues < 0.05. All variables except education are also significant at a 1% significance level.
+It can also be seen that all the variables except educaation are statistically significant at a 5% significance level due to p-values < 0.05. All variables except education are also significant at a 1% significance level.
 
 ###(b) Test whether the partial effect of education is different from zero.
 
