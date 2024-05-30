@@ -110,15 +110,18 @@ Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, 
 
 The purpose of the probit and logit models are to model the probability of "succes" so the models should lie in the unit interval [0,1]. To make this happen the model has a general function G(·) that takes a value between 0 and 1:
 $$P(y = 1|x) = G(β_0 + β_1x_1 + β_2x_2 + \ldots + β_k x_k)$$
+
 The function can be written as a logit and probit model.
 Logit: $G(z) = \tau(z) = \frac{exp(z)}{[1 + exp(z)]}$
 Probit: $G(z) = \Phi(z) = \int_{-\infty}^{z} \frac{1}{\sqrt{2\pi}} exp{{(-z^2}/{2)}} du$
 
 From these models, the partial effect of the independent variables can not be seen directly. The partial effect of a change in a variable can be found by taking the partial derivative of a function $g$:
 $$\frac{\partial P(y = 1|x)}{\partial x_j} = g(\beta_0 + \beta_1x_1 + \ldots + \beta_k x_k) \cdot \beta_j$$
+
 Therefore, the estimated partial effects of a roughly continous variable, $x_j$ are:
 $$\Delta \hat{P}(y = 1|x) \approx [g(\hat{\beta}_0 + \mathbf{x}\hat{\beta})\hat{\beta}_j] \Delta x_j$$
 ###(a) Estimate the models.
+
 The logit model and the probit model are estimated:
 ```{r}
 model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "logit"))
@@ -141,12 +144,60 @@ The foreign variable has a positive effect in both models while it is also signi
 
 ###(b) Test whether the partial effect of education is different from zero.
 
+To test whether the partial effect of educ is different from zero in the models, we set up a null hypothesis and an alternative hypothesis:
+$$H_0: \beta_4=0$$
+
+$$H_1: \beta_4 \neq 0$$
+These are tested using a t-test, as in assignment 4.1. 
+```{r}
+screenreg(list(Logit=coeftest(model_logit), Probit=coeftest(model_probit)),digits=4)
+```
+Since neither educ is significance for the logit or the probit, we fail to reject $H_0$. The fact that we fail to reject $H_0$ does not mean, that we can conclude, that the effect of education is different from zero. Hence, it is not sure, that educ has an effect on participation rate.
+
+
 ###(c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
+
+To hypothesis test on multiple parameters (age and $age^2$), we can use the likelihood-ratio test.
+$$LR=2(L_{ur}-L_r)$$
+The LR-test is similiar to the F-test, but the multiplication of 2 is needed so that the LR approximates a chi-square distribution
+
+We set up our null hypothesis and alternative hypothesis, that is:
+$$H_0: \beta_2=0, \beta_3=0$$
+$$H_1: \beta_2 \neq 0, \beta_3 \neq 0$$
+We already have our logit and probit model, so we only need to setup the logitR and probitR:
+```{r}
+logitR <- glm(part~inc+educ+you+old+fore, family = binomial(link = "logit"))
+probitR <- glm(part~inc+educ+you+old+fore, family = binomial(link = "probit"))
+```
+
+First we calculate the LR-score for logit:
+```{r}
+lrlogit <- 2*(logLik(model_logit)-logLik(logitR))
+pvallog <- pchisq(lrlogit,df=2, lower.tail=F)
+pvallog
+```
+For logit $H_0$ is rejected since p-val<0.05, and we instead accept our alternative hypothesis, that the partial effect of age is different from 0.
+
+The same can be done for probit:
+```{r}
+lrprobit <- 2*(logLik(model_probit)-logLik(probitR))
+pvalprob <- pchisq(lrprobit, df=2, lower.tail=F)
+pvalprob
+```
+The same result can be observed here; p-val<0.05. Hence, we once again reject $H_0$ and instead accept our alternative hypothesis: age is different from zero.
 
 ##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
 
+
+
 ##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
+
+
 
 ##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
+
+
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
+
+
