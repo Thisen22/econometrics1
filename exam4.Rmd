@@ -133,7 +133,34 @@ Since neither educ is significance for the logit or the probit, we fail to rejec
 
 ###(c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
 
+To hypothesis test on multiple parameters (age and $age^2$), we can use the likelihood-ratio test.
+$$LR=2(L_{ur}-L_r)$$
+The LR-test is similiar to the F-test, but the multiplication of 2 is needed so that the LR approximates a chi-square distribution
 
+We set up our null hypothesis and alternative hypothesis, that is:
+$$H_0: \beta_2=0, \beta_3=0$$
+$$H_1: \beta_2 \neq 0, \beta_3 \neq 0$$
+We already have our logit and probit model, so we only need to setup the logitR and probitR:
+```{r}
+logitR <- glm(part~inc+educ+you+old+fore, family = binomial(link = "logit"))
+probitR <- glm(part~inc+educ+you+old+fore, family = binomial(link = "probit"))
+```
+
+First we calculate the LR-score for logit:
+```{r}
+lrlogit <- 2*(logLik(model_logit)-logLik(logitR))
+pvallog <- pchisq(lrlogit,df=2, lower.tail=F)
+pvallog
+```
+For logit $H_0$ is rejected since p-val<0.05, and we instead accept our alternative hypothesis, that the partial effect of age is different from 0.
+
+The same can be done for probit:
+```{r}
+lrprobit <- 2*(logLik(model_probit)-logLik(probitR))
+pvalprob <- pchisq(lrprobit, df=2, lower.tail=F)
+pvalprob
+```
+The same result can be observed here; p-val<0.05. Hence, we once again reject $H_0$ and instead accept our alternative hypothesis: age is different from zero.
 
 ##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
 
