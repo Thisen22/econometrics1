@@ -151,13 +151,43 @@ pval
 From the calculated p-value, $\H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
+We perform the entire analysis again, starting from 3.3, because 3.1 and 3.2 are not about the choice of instrumental variables. The tests and methods will not be elaborated further, so for an explanation of what we are doing look at the earlier exercises.
+
+We start by testing whether meduc and feduc are useful as instruments using the same method as in 3.3:
+```{r}
+ivreg7 <- lm(educ ~ exp + male + black + hisp + meduc + feduc)
+linearHypothesis(ivreg7, c("meduc=0","feduc=0"))
+```
+Since the p-value < 0.05 $H_0$ is rejected, hence the two variables are statistically significant, why it can be assumed, that meduc and feduc are correlated with education, and can be used as instruments for education.
+
+Now we want to test if there is endogeneity issues in the new model with the two instrumental variables. The same method as in 3.4 will be used:
+```{r}
+res7 <- ivreg7$residuals
+res_mod7 <- lm(log_earning ~ educ + exp + male + black + hisp + res7)
+coeftest(res_mod7)
+```
+We fail to reject the null hypothesis at a 5% significance level, and thereby we cannot conclude that there is an endogeneity issue. If we used a 10% significance level then we could have rejected the null hypothesis and instead accepted the alternative hypothesis that there is an endogeneity issue, indicating potential endogeneity issues.
+
 We perform the 2SLS method again as in 3.5, but this time with only meduc and feduc as instrumental variables, and we do it directly with the code in R:
 ```{r}
-sls2 <- ivreg(log_earning~educ+exp+male+black+hisp|exp+male+black+hisp+feduc+meduc)
+sls2 <- ivreg(log_earning ~ educ + exp + male + black + hisp | exp + male + black + hisp + feduc + meduc)
 ```
 
 To look whether it changes our conclusions we print it together with the OLS from 3.1 and the 2SLS from 3.5:
 ```{r}
 screenreg(list(OLS=model, SLS3_5 = sls, SLS3_7=sls2), digits = 4)
 ```
+In the above we can see the original model and the different results we get with using 3 IV's and 2 IV's to estimate the fitted values of education. We performed overidentification test in 3.6 when using 3 IV's, where we found that the model was indeed overidentificated, so one of the IV's was not exogenous. The same overidentification test is now performed on the new model with two IV's:
+```{r}
+resid2sls2 <- resid(sls2)
+res.aux2 <- lm(resid2sls2 ~ exp + male + black + hisp + meduc + feduc)
+r2_2 <- summary(res.aux2)$r.squared
+n2 <- nobs(res.aux2)
+teststat2 <- n2*r2_2
+pval2 <- 1-pchisq(teststat2,df=1) #now only 1 degree of freedom, because only 2 IV's and 1 endogenous variable 
+pval2
+```
+The new model with 2 IV's also rejects the null hypothesis. This means that at least one of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
+
+
 
