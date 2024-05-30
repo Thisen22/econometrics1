@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(readr); library(texreg); library(AER); library(texreg)
+library(readr); library(texreg); library(AER); library(texreg); library(mfx)
 data <- read.csv("data4.csv")
 part <- data$participation; inc <- data$income; age <- data$age; age_sq <- data$agesq; educ <- data$educ; you <- data$youngkids; old <- data$oldkids; fore <- data$foreign
 ```
@@ -136,7 +136,20 @@ Since neither educ is significance for the logit or the probit, we fail to rejec
 
 
 ##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
+To compare the partial effect of income across the models we use the APE (average partial effect) method on both the probit and logit model and then compare it with the LPM. We do this because it makes little sense to compare the direct coefficient estimates from a logit or probit model (or LPM). APE method is the closest to a comparable estimate between models that we find and it also can be compared with the LPM.
 
+
+The APE calculates the partial effect for all observations and then takes the average of the effects:
+$$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g(\mathbf{x_i}\hat{\beta})]$$
+
+This is calculated directly in R:
+```{r}
+ape_model_logit <- logitmfx(model_logit, data = data, atmean = F)
+ape_model_probit <- logitmfx(model_probit, data = data, atmean = F)
+screenreg(list(APE_Logit=ape_model_logit, APE_Probit=ape_model_probit, LMP=model),digits=4)
+```
+
+When looking at the estimate for income in the logit and probit model it can be seen that there is a larger average effect of change in income 
 
 
 ##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
