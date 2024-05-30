@@ -43,7 +43,6 @@ The dataset data4 contains these variables measured for 872 Swiss women.
 
 ##1. Set up a linear regression model for participation where you use the described explanatory variables.
 
-The linear regression, with participation rate of the labor force 
 ###(a) Estimate the model using OLS and comment on the results.
 ```{r}
 model <- lm(part~inc+age+age_sq+educ+you+old+fore)
