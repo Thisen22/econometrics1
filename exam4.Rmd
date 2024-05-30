@@ -109,20 +109,31 @@ Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, 
 ##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
 
 ###(a) Estimate the models.
-<<<<<<< HEAD
-=======
+
 The logit model and the probit model are estimated:
 ```{r}
 model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "logit"))
 model_probit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "probit"))
 screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
 ```
- 
->>>>>>> 6019b8846ce0d542608755853963af26a716517a
+
 
 ###(b) Test whether the partial effect of education is different from zero.
 
+To test whether the partial effect of educ is different from zero in the models, we set up a null hypothesis and an alternative hypothesis:
+$$H_0: \beta_4=0$$
+
+$$H_1: \beta_4 \neq 0$$
+These are tested using a t-test, as in assignment 4.1. 
+```{r}
+screenreg(list(Logit=coeftest(model_logit), Probit=coeftest(model_probit)),digits=4)
+```
+Since neither educ is significance for the logit or the probit, we fail to reject $H_0$. The fact that we fail to reject $H_0$ does not mean, that we can conclude, that the effect of education is different from zero. Hence, it is not sure, that educ has an effect on participation rate.
+
+
 ###(c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
+
+
 
 ##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
 
