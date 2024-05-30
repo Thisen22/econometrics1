@@ -209,7 +209,13 @@ When looking at the estimate for income in the logit and probit model it can be 
 
 ##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
+The partial effect at the average (PEA) can be seen as the partial effect at the "average" of a variable. It is written like this:
+$$P\hat{E}{A}_j = g(\bar{x}\hat{\beta})\hat{\beta}_j$$
+A challenge can arise when using the PEA for a variable that can only take a value of 0 and 1. An example could be the foreign variable used earlier in this assignment. When a variable has a value of either 0 or 1 it would not make sense to calculate the partial effect of the average person as the PEA does.
 
+On the other hand, the average partial effect (APE) calculates the partial effect for all observations and then takes the average of the effect. As shown earlier in this assignment, it is written like this:
+$$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g(\mathbf{x_i}\hat{\beta})]$$
+Therefore, the reason that APE is preferred over PEA is that the APE shows the partial effect where as the PEA shows the partial effect of the average person.
 
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
 
