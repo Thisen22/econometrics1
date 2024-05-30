@@ -115,7 +115,7 @@ model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link
 model_probit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "probit"))
 screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
 ```
-
+ 
 
 ###(b) Test whether the partial effect of education is different from zero.
 
