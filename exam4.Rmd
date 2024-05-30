@@ -49,6 +49,21 @@ The linear regression, with participation rate of the labor force
 model <- lm(part~inc+age+age_sq+educ+you+old+fore)
 summary(model)
 ```
+From the model, it can be seen that the income variable has an estimate of -0.0035163 which means that one unit (1000 CHF) more income will give approximately 0.35% lower probability of participation. 
+
+The age variable has an estimate of 0.0633852 while the age squared variable has an estimate of -0.0009029 which means that the probability of participation will be higher up to a certain age where the probability will start to drop. This makes sense due to people retiring at a certain age.
+
+The education variable has an estimate of 0.0067725 which means that one extra year of education will give approximately a 0.68% higher probability of participation.
+
+The young kids variable for number of children under 7 years old has an estimate of -0.2390033 which means that if you have children under 7 years old, you will have approximately 23.9% lower probability of participation than people without children under 7 years old.
+
+The old kids variable for number of children over 7 years old has an estimate of -0.0474930 which means that if you have children over 7 years old, you will have approximately 4.75% lower probability of participation than people without children over 7 years old.
+
+The foreign variable has an estimate of 0.2572106 which means that you have approximately 25.72% higher probability of participation if you are foreign than if you are not foreign.
+
+The intercept is -0.0035163 which is the value of the dependent variable, in this case participation in the labor force, when all other variables have a value of 0.
+
+It can also be seen that all the variables except educaation are statistically significant at a 5% significance level due to p-vaalues < 0.05. All variables except education are also significant at a 1% significance level.
 
 ###(b) Test whether the partial effect of education is different from zero.
 
