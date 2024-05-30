@@ -247,3 +247,14 @@ It can be seen, that the probit APE is approximately 0.25, which is almost the s
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
 
 
+PCP is calculated in R in the following way:
+```{r}
+y <- data$participation
+lmp_pcp <- 100 * mean((model$fitted.values > 0.5) == y)
+logit_pcp <- 100 * mean((model_logit$fitted.values > 0.5) == y)
+probit_pcp <- 100 * mean((model_probit$fitted.values > 0.5) == y)
+PCP <- c(lmp_pcp, logit_pcp, probit_pcp)
+names(PCP) <- c("LMP PCP", "Logit PCP", "Probit PCP")
+PCP
+```
+It can be seen that the three models are almost equally good at predicting. The logit and probit models only predict marginally better at 68.12%, while the LPM corretly predicts 67.43%. 
