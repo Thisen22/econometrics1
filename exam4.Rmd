@@ -109,6 +109,16 @@ Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, 
 ##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
 
 ###(a) Estimate the models.
+<<<<<<< HEAD
+=======
+The logit model and the probit model are estimated:
+```{r}
+model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "logit"))
+model_probit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "probit"))
+screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
+```
+ 
+>>>>>>> 6019b8846ce0d542608755853963af26a716517a
 
 ###(b) Test whether the partial effect of education is different from zero.
 
