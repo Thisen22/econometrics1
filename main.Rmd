@@ -1,0 +1,18 @@
+---
+title: "main"
+author: "Johan Bysted, Mathias Kold og Jonathan Arve"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(car); library(readr); library(texreg); library(AER); library(texreg); library(mfx); library(lmtest); library(foreign); library(sandwich)
+```
+
+```{r, child=c('exam1.rmd','exam2.rmd','Exam3.rmd','exam4.rmd')}
+
+```
+

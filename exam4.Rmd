@@ -2,7 +2,9 @@
 title: "exam4"
 author: "Mathias Kold"
 date: "2024-05-30"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
