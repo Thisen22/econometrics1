@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Exam 4 - Models for binary variables
+
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
 **MLR1:** Linear in Parameters
@@ -35,8 +37,6 @@ In this assignment, we investigate the factors that influence whether women in S
 The dependent variable is participation, a binary variable that measures whether the person is part of the labor force. Additionally, we have seven explanatory variables: income that is not work-related measured in 1000 CHF (income), age (age), age squared (agesq), education measured in years (educ), number of children under 7 years old (youngkids), number of children over 7 years old (oldkids), and a dummy variable indicating whether the person is a foreigner (foreign).
 
 The dataset data4 contains these variables measured for 872 Swiss women.
-
-## Exam 4 - Models for binary variables
 
 ##1. Set up a linear regression model for participation where you use the described explanatory variables.
 
