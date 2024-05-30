@@ -109,13 +109,6 @@ Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, 
 ##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
 
 ###(a) Estimate the models.
-The logit model and the probit model are estimated:
-```{r}
-model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "logit"))
-model_probit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "probit"))
-screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
-```
-
 
 ###(b) Test whether the partial effect of education is different from zero.
 
@@ -123,8 +116,16 @@ screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
 
 ##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
 
+
+
 ##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
+
+
 
 ##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
+
+
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
+
+
