@@ -253,8 +253,20 @@ $$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g(\mathbf{x_i}\hat{\beta})]
 Therefore, the reason that APE is preferred over PEA is that the APE shows the partial effect where as the PEA shows the partial effect of the average person.
 
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
-
 Using a goodness of fit estimate called percently correctly predicted (PCP), which shows how big a share of the data that the models predicts correctly. However, PCP is not necessarily always a good indicator of the model. E.g. if 300 answers yes and 60 answers no, but the model predicts that everyone answers yes, it will have a high PCP, but is not necessarily a good predictor. To examine when the model predicts correctly, we set up a probability limit for fitted values of the models:
 $$\tilde{y}=1, if\; \tilde{y}\;\geq\;c$$
 $$\tilde{y}=0, if\; \tilde{y}\;\leq\;c$$
 The probability limit is set to 0.5. Hence, fitted values of the three models below 0.5 will predict that the person not participating in the labor force (y=0), while fitted values over 0.5 will predict, that the person participates in the labor force (y=1).
+
+PCP is calculated in R in the following way:
+```{r}
+y <- data$participation
+lmp_pcp <- 100 * mean((model$fitted.values > 0.5) == y)
+logit_pcp <- 100 * mean((model_logit$fitted.values > 0.5) == y)
+probit_pcp <- 100 * mean((model_probit$fitted.values > 0.5) == y)
+PCP <- c(lmp_pcp, logit_pcp, probit_pcp)
+names(PCP) <- c("LMP PCP", "Logit PCP", "Probit PCP")
+PCP
+```
+It can be seen that the three models are almost equally good at predicting. The logit and probit models only predict marginally better at 68.12%, while the LPM correctly predicts 67.43%. 
+
