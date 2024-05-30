@@ -168,7 +168,40 @@ The same result can be observed here; p-val<0.05. Hence, we once again reject $H
 
 ##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
 
+APE is used to to examine a dummy variable, foreign. We calculate APE using the method for discrete variables. 
 
+$$A\hat{P}E=n^{-1}\sum\limits_{i=1}^n[G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids+\beta_7]-$$
+
+$$G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids]]$$
+So the APE when foreign ($\beta_7$) is included minus APE when foreign is excluded. For each observation (i), the estimated effect of changing foreign from 0 to 1 is calculated.
+
+We start by setting up a matrix for all variables and define if a person is foreign(1) or not(0):
+```{r}
+cdata <- cbind(1, as.matrix(data[,c("income","age","agesq","educ","youngkids","oldkids","foreign")]))
+cdata1 <- cdata
+cdata1[,8] <- 1
+cdata2<-cdata
+cdata2[,8] <- 0
+```
+
+Afterwards, the coefficients for both models is found
+```{r}
+pcoef <- model_probit$coefficients
+lcoef <- model_logit$coefficients
+```
+
+Now, APE can be calculated for probit and logit. Starting with probit:
+```{r}
+probitAPE <- mean(pnorm(cdata1%*%pcoef)-pnorm(cdata2%*%pcoef))
+probitAPE
+```
+
+And for logit:
+```{r}
+logitAPE <- mean(pnorm(cdata1%*%lcoef)-pnorm(cdata2%*%lcoef))
+logitAPE
+```
+It can be seen, that the probit APE is approximately 0.25, which is almost the same as for the LPM (0.26). However, for logit, it can be seen, that there is a quite big difference, as logit gives a result of 0.336, which indicates, that the partial effects for probit is almost the same as for LPM, where as for logit there is a difference. Which one is more correct, is hard to interpret.
 
 ##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
