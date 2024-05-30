@@ -51,8 +51,46 @@ summary(model)
 ```
 
 ###(b) Test whether the partial effect of education is different from zero.
+Using a t-test, we can test whether the partial effect of education is different from zero. We set up our null hypothesis, that is:
+$$H_0: \beta_4=0$$
+And the alternative hypothesis:
+$$H_1: \beta_4 \neq 0$$
+
+If the t-value is within the 95% accept-interval, we fail to reject our null hypothesis. Otherwise, we reject our null hypothesis, and instead accept our alternative hypothesis. We perform a two-sided test, which means there is 2,5% outside of the acceptance interval on each side. 
+
+The t-score can be calculated as follows:
+$$t=\frac{\beta_j}{se(\beta_j)}$$
+The coefficient, $\beta$ is given from the summary of the model. The same goes for the standard error.
+```{r}
+beta <-  0.0067725; se <- 0.0059615
+tscore <- beta/se
+tscore
+```
+To calculate the accept interval, we use the qt() function and our degrees of freedom
+```{r}
+df <- length(data$educ)-1
+acc <- qt(1-0.025, df)
+interval <- c(-acc,acc)
+names(interval) <- c("Lower limit", "Upper limit")
+interval
+```
+Since the calculated t-score is within the accept interval, we fail to reject our null hypothesis at a 5% significance level. 
 
 ###(c) Test whether the partial effect of age is different from zero.
+
+
+We can test whether the partial effect of age is different from zero. We set up our null hypothesis, that is:
+$$H_0: \beta_2=0, \beta_3=0$$
+And the alternative hypothesis:
+$$H_1: \beta_2 \neq 0, \beta_3 \neq 0$$
+Since this is a joint hypothesis, an F-test is needed. To do this, we use the Wald-test. The Wald-test is a kind of F-test, that takes heteroskedasticity into account. The F-statistic is calculated using the following formula:
+$$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
+
+```{r}
+waldtest(model, vcov=vcovHC(model,type="HC0"), terms=(2:3))
+```
+Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, and instead accept our alternative hypothesis, $H_1$, that the partial effect of age is not equal to 0.
+
 
 ##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
 
