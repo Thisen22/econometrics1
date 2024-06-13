@@ -18,24 +18,27 @@ part <- data$participation; inc <- data$income; age <- data$age; age_sq <- data$
 
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
-**MLR1:** Linear in Parameters
-The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
-where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+\bold{MLR1:} Linear in Parameters
+The model in the population can be written as 
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
-**MLR2:** Random Sampling
-We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+\bold{MLR2:} Random Sampling
+We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
-**MLR3:** No Perfect Collinearity
+\bold{MLR3:} No Perfect Collinearity
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
-**MLR4:** Zero Conditional Mean
-The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+\bold{MLR4:} Zero Conditional Mean
+The error $\u$ has an expected value of zero given any values of the independent variables. In other words, 
+$$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
-**MLR5:** Homoskedasticity
-The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+\bold{MLR5:} Homoskedasticity
+The error $\u$ has the same variance given any value of the explanatory variables. In other words, 
+$$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
-**MLR6:** Normality
-The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+\bold{MLR6:} Normality
+The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
 In this assignment, we investigate the factors that influence whether women in Switzerland participate in the labor force
 
@@ -121,7 +124,9 @@ From these models, the partial effect of the independent variables can not be se
 $$\frac{\partial P(y = 1|x)}{\partial x_j} = g(\beta_0 + \beta_1x_1 + \ldots + \beta_k x_k) \cdot \beta_j$$
 
 Therefore, the estimated partial effects of a roughly continous variable, $x_j$ are:
-$$\Delta \hat{P}(y = 1|x) \approx [g(\hat{\beta}_0 + \mathbf{x}\hat{\beta})\hat{\beta}_j] \Delta x_j$$
+$$
+\Delta \hat{P}(y = 1 \mid x) \approx \left[ g(\hat{\beta}_0 + {x}\hat{\beta}) \hat{\beta}_j \right] \Delta x_j
+$$
 ###(a) Estimate the models.
 
 The logit model and the probit model are estimated:
@@ -193,7 +198,9 @@ To compare the partial effect of income across the models we use the APE (averag
 
 
 The APE calculates the partial effect for all observations and then takes the average of the effects:
-$$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g(\mathbf{x_i}\hat{\beta})]$$
+$$
+\hat{APE} = \hat{\beta_j} \left[ n^{-1} \sum\limits_{i=1}^{n} g({x_i} \hat{\beta}) \right]
+$$
 
 This is calculated directly in R:
 ```{r}
@@ -245,11 +252,13 @@ It can be seen, that the probit APE is approximately 0.25, which is almost the s
 ##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
 The partial effect at the average (PEA) can be seen as the partial effect at the "average" of a variable. It is written like this:
-$$P\hat{E}{A}_j = g(\bar{x}\hat{\beta})\hat{\beta}_j$$
+$$
+P\hat{E}{A}_j = g(\bar{x}\hat{\beta})\hat{\beta}_j
+$$
 A challenge can arise when using the PEA for a variable that can only take a value of 0 and 1. An example could be the foreign variable used earlier in this assignment. When a variable has a value of either 0 or 1 it would not make sense to calculate the partial effect of the average person as the PEA does.
 
 On the other hand, the average partial effect (APE) calculates the partial effect for all observations and then takes the average of the effect. As shown earlier in this assignment, it is written like this:
-$$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g(\mathbf{x_i}\hat{\beta})]$$
+$$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g({x_i}\hat{\beta})]$$
 Therefore, the reason that APE is preferred over PEA is that the APE shows the partial effect where as the PEA shows the partial effect of the average person.
 
 ##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.

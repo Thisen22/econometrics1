@@ -5,9 +5,8 @@ date: "`r format(Sys.Date(), '%d. %B %Y')`"
 output: 
   pdf_document:
         latex_engine: pdflatex
-toc-title: "Indholdsfortegnelse"
-header-includes:
-    - \usepackage{setspace}\onehalfspacing
+  toc: true
+  toc-title: "Table of contents"
 ---
 
 ```{r setup, include=FALSE}
