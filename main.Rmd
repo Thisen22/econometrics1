@@ -1,0 +1,40 @@
+---
+title: "Econometrics exam project"
+author: "Johan Bysted, Jonathan Arve og Mathias Kold"
+date: "`r format(Sys.Date(), '%d. %B %Y')`"
+output: 
+  pdf_document:
+        latex_engine: pdflatex
+toc-title: "Indholdsfortegnelse"
+header-includes:
+    - \usepackage{setspace}\onehalfspacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+library(car); library(readr); library(texreg); library(AER); library(texreg); library(mfx); library(lmtest); library(foreign); library(sandwich)
+```
+\newpage
+```{=latex}
+\setcounter{tocdepth}{4}
+\tableofcontents
+```
+\newpage
+
+```{r child = 'exam1.Rmd'}
+```
+
+\newpage
+
+```{r child = 'exam2.Rmd'}
+```
+
+\newpage
+
+```{r child = 'Exam 3.Rmd'}
+```
+
+\newpage
+
+```{r child = 'exam4.Rmd'}
+```

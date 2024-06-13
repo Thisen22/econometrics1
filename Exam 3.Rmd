@@ -2,10 +2,12 @@
 title: "Exam 3"
 author: "Johan Bysted"
 date: "2024-05-16"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup3, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readr); library(texreg); library(AER)
 data3 <- read_csv("data3.csv")

@@ -2,10 +2,12 @@
 title: "Exam 2"
 author: "Mathias Kold"
 date: "2024-04-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup2, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
