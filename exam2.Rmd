@@ -35,8 +35,8 @@ The population error $u$ is independent of the explanatory variables $x_1, x_2, 
 
 Consider the following two models for bank employees' salaries:
 \begin{enumerate}
-    \item $salary = \beta_0 + \beta_1 educ + \beta_2 salbegin + \beta_3 male + \beta_4 minority + u$ (1)
-    \item $\log(salary) = \beta_0 + \beta_1 educ + \beta_2 \log(salbegin) + \beta_3 male + \beta_4 minority + u$ (2)
+    \item $salary = \beta_0 + \beta_1 educ + \beta_2 salbegin + \beta_3 male + \beta_4 minority + u$
+    \item $\log(salary) = \beta_0 + \beta_1 educ + \beta_2 \log(salbegin) + \beta_3 male + \beta_4 minority + u$
 \end{enumerate}
 where $salary$ is the annual salary (in 1000 US dollars), $educ$ is education measured in number of years, $salbegin$ is the starting salary (in 1000 US dollars) for the person's first position in the same bank, $male$ is a dummy variable for gender, and $minority$ is a dummy variable indicating whether one belongs to a minority.
 
@@ -101,7 +101,7 @@ The residuals vs leverage plot does not show any significant outliers as none of
 
 Because it fits the four models the best, it can be argued that model 2 would be preferred over model 1.
 
-##3. Examine whether the two models are misspecified using the RESET test.
+## 3. Examine whether the two models are misspecified using the RESET test.
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:

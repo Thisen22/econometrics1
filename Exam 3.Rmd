@@ -18,27 +18,27 @@ log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- da
 
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
-**MLR1:** Linear in Parameters
+**MLR1: Linear in Parameters**
 The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
-where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
-**MLR2:** Random Sampling
-We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+**MLR2: Random Sampling**
+We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
-**MLR3:** No Perfect Collinearity
+**MLR3: No Perfect Collinearity**
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
-**MLR4:** Zero Conditional Mean
-The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+**MLR4: Zero Conditional Mean**
+The error $u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
-**MLR5:** Homoskedasticity
-The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+**MLR5: Homoskedasticity**
+The error $u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
-**MLR6:** Normality
-The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+**MLR6: Normality**
+The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
 Consider the following model:
-$log(earning) = β0 + β1educ + β2exp + β3male + β4ethblack + β5ethhisp + u$
+$log(earning) = \beta_0 + \beta_1educ + \beta_2exp + \beta_3male + \beta_4ethblack + \beta_5ethhisp + u$
 
 where earnings are hourly wages in US dollars, educ is education measured in years of schooling, exp is work experience measured in years, male is a gender dummy, ethblack and ethhisp are race dummies for African Americans and Hispanics, respectively.
 Additionally, we have three instruments: mother's education measured in years (meduc), father's education measured in years (feduc), and number of siblings (sibling s).
@@ -102,10 +102,10 @@ $$y_1=\beta_0+\beta_1y_2+\beta_2exp+\beta_3male+\beta_4black+\beta_5hisp+u$$
 where $y_2$=educ, the variable that is suspected to have endogeneity. Now, a regression for educ($y_2$) is made. The three IV's for educ is added in the regression:
 $$y_2=\pi_0+\pi_1exp+\pi_2male+\pi_3black+\pi_4hisp+\pi_5sib+\pi_6meduc+\pi_7feduc+v$$
 In this regression, the following assumptions is expected to be fulfilled:
- 
-\itemize{$E(v)=0$. The mean of the error term is 0, which indicates unbiasedness.}
-\itemize{$Cov(x,v)=0$. This applies for all variables in the original model.}
-\itemize{$Cov(z,v)=0$. The IV's should be independent of the error term.}
+- $E(v)=0$. The mean of the error term is 0, which indicates unbiasedness.
+- $Cov(x,v)=0$. This applies for all variables in the original model.
+- $Cov(z,v)=0$. The IV's should be independent of the error term.
+
 
 ```{r}
 stage1 <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
@@ -135,14 +135,14 @@ First,  the 2SLS residuals, $\hat{u}$, from the earlier estimated 2SLS model are
 resid2sls <- resid(sls)
 ```
 
-Then the residuals are regressed on all exogenous variables including the IV's, where R-squared, $$R^2_1$$ is obtained.
+Then the residuals are regressed on all exogenous variables including the IV's, where R-squared, $R^2_1$ is obtained.
 ```{r}
 res.aux <- lm(resid2sls ~ exp + male + black + hisp + sib + meduc + feduc)
 ```
 
-The null hypothesis is that all IV's are uncorrelated with $\u$:
-$$H_0: \operatorname{Corr}(Z,u) = 0, \quad \text{hvor} \quad Z = (z_1, z_2, z_3). $$
-We use $nR^{2}_1 \sim \chi^2_q$, where $\q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
+The null hypothesis is that all IV's are uncorrelated with $u$:
+$$H_0: \operatorname{Corr}(Z,u) = 0, \quad \text{where} \quad Z = (z_1, z_2, z_3). $$
+We use $nR^{2}_1 \sim \chi^2_q$, where $q$ is the number of instrumental variables from outside the model minus the total number of endogenous explanatory variables. Hypothesis will be tested: 
 ```{r}
 r2 <- summary(res.aux)$r.squared
 n <- nobs(res.aux)
@@ -150,7 +150,7 @@ teststat <- n*r2
 pval <- 1-pchisq(teststat,df=2)
 pval
 ```
-From the calculated p-value, $\H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
+From the calculated p-value, $H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
 
 ##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
 We perform the entire analysis again, starting from 3.3, because 3.1 and 3.2 are not about the choice of instrumental variables. The tests and methods will not be elaborated further, so for an explanation of what we are doing look at the earlier exercises.
