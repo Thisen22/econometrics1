@@ -1,18 +1,40 @@
 ---
-title: "main"
-author: "Johan Bysted, Mathias Kold og Jonathan Arve"
-date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
+title: "Econometrics exam project"
+author: "Johan Bysted, Jonathan Arve og Mathias Kold"
+date: "`r format(Sys.Date(), '%d. %B %Y')`"
+output: 
+  pdf_document:
+        latex_engine: pdflatex
+toc-title: "Indholdsfortegnelse"
+header-includes:
+    - \usepackage{setspace}\onehalfspacing
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = T)
 library(car); library(readr); library(texreg); library(AER); library(texreg); library(mfx); library(lmtest); library(foreign); library(sandwich)
 ```
+\newpage
+```{=latex}
+\setcounter{tocdepth}{4}
+\tableofcontents
+```
+\newpage
 
-```{r, child=c('exam1.rmd','exam2.rmd','Exam3.rmd','exam4.rmd')}
-
+```{r child = 'exam1.Rmd'}
 ```
 
+\newpage
+
+```{r child = 'exam2.Rmd'}
+```
+
+\newpage
+
+```{r child = 'Exam 3.Rmd'}
+```
+
+\newpage
+
+```{r child = 'exam4.Rmd'}
+```
