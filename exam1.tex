@@ -117,13 +117,45 @@
 heteroskedasticity}\label{exam-1---ols-and-heteroskedasticity}
 
 In a multiple linear regression (MLR) there are 6 assumptions.
-Assumption 1-5 are called Gauss-Markov assumptions while assumption 6 is
+Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is
 called the normality assumption. The first 4 assumptions exist to secure
 that the model is unbiased, while assumption 5 checks for
 heteroskedasticity and assumption 6 checks for normality in the model.
-The assumptions are:
+The assumptions are: \bold{MLR1: Linear in Parameters} The model in the
+population can be written as
+\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u\]
+where \(\beta_0, \beta_1, \ldots, \beta_k\) are the unknown parameters
+of interest and \(u\) is an unobserved random error or disturbance term.
 
-\textbf{MLR1}
+\bold{MLR2: Random Sampling}
+
+We have a random sample of \(n\) observations,
+\(\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}\),
+following the population model in Assumption MLR.1.
+
+\bold{MLR3: No Perfect Collinearity}
+
+In the sample (and therefore in the population), none of the independent
+variables is constant, and there are no exact linear relationships among
+the independent variables.
+
+\bold{MLR4: Zero Conditional Mean}
+
+The error \(u\) has an expected value of zero given any values of the
+independent variables. In other words,
+\[E(u | x_1, x_2, \ldots, x_k) = 0\]
+
+\bold{MLR5: Homoskedasticity}
+
+The error \(u\) has the same variance given any value of the explanatory
+variables. In other words,
+\[\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2\]
+
+\bold{MLR6: Normality}
+
+The population error \(u\) is independent of the explanatory variables
+\(x_1, x_2, \ldots, x_k\) and is normally distributed with zero mean and
+variance \(\sigma^2\): \(u \sim \text{Normal}(0, \sigma^2)\).
 
 Look at the following model for bank employees wage:
 \[log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u\]
@@ -141,13 +173,84 @@ results}\label{estimate-the-model-using-ols.-comment-on-the-output-and-interpret
 \begin{Highlighting}[]
 \FunctionTok{options}\NormalTok{(}\AttributeTok{scipen =} \DecValTok{999}\NormalTok{)}
 \FunctionTok{library}\NormalTok{(readr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: pakke 'readr' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(foreign)}
 \FunctionTok{library}\NormalTok{(car)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Loading required package: carData
+## Warning: pakke 'car' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{verbatim}
+## Indlæser krævet pakke: carData
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(sandwich)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: pakke 'sandwich' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lmtest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: pakke 'lmtest' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{verbatim}
+## Indlæser krævet pakke: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: pakke 'zoo' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Vedhæfter pakke: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## De følgende objekter er maskerede fra 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(texreg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: pakke 'texreg' blev bygget under R version 4.2.3
+\end{verbatim}
+
+\begin{verbatim}
+## Version:  1.39.3
+## Date:     2023-11-09
+## Author:   Philip Leifeld (University of Essex)
+## 
+## Consider submitting praise using the praise or praise_interactive functions.
+## Please cite the JSS article in your publications -- see citation("texreg").
 \end{verbatim}
 
 \begin{Shaded}
@@ -337,26 +440,6 @@ p-value.
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(lmtest)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Loading required package: zoo
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'zoo'
-\end{verbatim}
-
-\begin{verbatim}
-## The following objects are masked from 'package:base':
-## 
-##     as.Date, as.Date.numeric
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{bptest}\NormalTok{(model)}
 \end{Highlighting}
 \end{Shaded}
@@ -407,6 +490,56 @@ in the model.
 \subsection{4 - Calculate robust standard errors for the model and
 compare with the results in question
 1.}\label{calculate-robust-standard-errors-for-the-model-and-compare-with-the-results-in-question-1.}
+
+Since there is heteroskedasticity in the model, it is necessary to take
+this into account, when performing a linear regression. A valid
+estimator of multiple linear regression in the presence of
+heteroskedasticity is
+\[Var(\hat{\beta_j})=\frac{\sum\limits_{i=0}^n\hat{r}^2_{ij}\cdot\hat{u}^2_i}{(SSR_j)^2}\]
+where \(\hat{r}_{ij}\) denotes the \(i\)th residual from regressing
+\(x_j\) on all other independent variables. The robust standard error is
+obtained by taking the square root of the above equation. R can
+calculate the robust standard errors using coeftest():
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coef\_model }\OtherTok{\textless{}{-}} \FunctionTok{coeftest}\NormalTok{(model, }\AttributeTok{vcov=}\FunctionTok{vcovHC}\NormalTok{(model,}\AttributeTok{type=}\StringTok{"HC0"}\NormalTok{))}
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{OLS=}\NormalTok{model,}\AttributeTok{Standard\_Robust\_Error=}\NormalTok{coef\_model), }\AttributeTok{digits=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ==================================================
+##                OLS           Standard_Robust_Error
+## --------------------------------------------------
+## (Intercept)      0.8487 ***   0.8487 ***          
+##                 (0.0751)     (0.0794)             
+## educ             0.0233 ***   0.0233 ***          
+##                 (0.0039)     (0.0035)             
+## log(salbegin)    0.8218 ***   0.8218 ***          
+##                 (0.0360)     (0.0374)             
+## male             0.0482 *     0.0482 *            
+##                 (0.0199)     (0.0200)             
+## minority        -0.0424 *    -0.0424 *            
+##                 (0.0203)     (0.0177)             
+## --------------------------------------------------
+## R^2              0.8041                           
+## Adj. R^2         0.8024                           
+## Num. obs.      474                                
+## ==================================================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+It can be seen that the estimates from the two models are the same,
+which is expected, because we try to account for the non-constant
+variance of the error term in the OLS-model. Hence, it is only the
+standard errors that change. Furthermore, the significance level does
+not change, when performing a, when adjusting for heteroskedasticity.
+The robust standard errors can be used to perform hypothesis testing and
+to calculate confidence intervals. Even when adjusting for
+heteroskedasticity, the conclusion from the regressions does not change,
+since the estimates are the same, and there are no significant changes.
 
 \subsection{\texorpdfstring{5 - Test the hypothesis \(H_0:\beta_2 = 1\)
 against the alternative
@@ -498,8 +631,10 @@ When we want to test multiple hypothesis we turn to the F-statistics,
 where we uses this formula:
 \[F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}\] where
 \(R^2_{ur}\) is the R-squared from our unrestricted model, \(R^2_{r}\)
-is the R-squared from the restricted and q is the difference in the
-degrees of freedom between the unrestricted and restricted model.
+is the R-squared from the restricted, \(q\) is the difference in the
+degrees of freedom between the unrestricted and restricted model, \(n\)
+is the number of observations in the dataset and \(k\) is the number of
+independent variables in the unrestricted model.
 
 In our case the unrestricted model is the one given in the beginning of
 assignment 1.1 with all the independent variables, and in the case where
@@ -588,7 +723,130 @@ as before still confirming the rejecting of our null hypothesis.
 \subsection{7 - Estimate the model using FGLS and comment on the
 results.}\label{estimate-the-model-using-fgls-and-comment-on-the-results.}
 
+Feasible generalised least squares (FGLS) is a method used to adress
+heteroskedasticity. It can difficult to know the form of
+heteroskedasticity (i.e, h(\(x_i\))). In many cases, it is possible to
+model the function \(h\) and use this data to estimate the unknown
+parameters. By estimating \(h_i\), an estimated value of \(h\) is
+obtained, \(\hat{h_i}\). One method to find the exact form of \(h_i\) is
+as follows:
+\[Var(u|x)=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)\]
+where \(x_1,x_2,...,x_k\) are the independent variables in the
+regression.
+
+Since the parameters \(\delta\) is unknown for the population, these are
+estimated using the given data, where \(\hat{h}\) can be used to account
+for heteroskedasticity. To find the estimates for \(\delta\), we can use
+the following. By taking log, the model can be linearised.
+
+\[u^2=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)v\]
+
+\[log(u^2)=a_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k+e\]
+
+We already know from 1.3 that our model has heteroskedasticity problems,
+so we obtain our squared residuals from our OLS model and log them:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logu2 }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+So now we run the regression on the form mentioned earlier:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{varreg }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(logu2 }\SpecialCharTok{\textasciitilde{}}\NormalTok{ educ }\SpecialCharTok{+} \FunctionTok{log}\NormalTok{(salbegin) }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ minority, }\AttributeTok{data =}\NormalTok{ data1)}
+\end{Highlighting}
+\end{Shaded}
+
+After we calculate the weights by exponentiating the fitted values from
+varreg:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\FunctionTok{fitted}\NormalTok{(varreg))}
+\end{Highlighting}
+\end{Shaded}
+
+And then we can estimate the FGLS:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{FGLS }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(salary) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ educ }\SpecialCharTok{+} \FunctionTok{log}\NormalTok{(salbegin) }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ minority, }\AttributeTok{weight=}\DecValTok{1}\SpecialCharTok{/}\NormalTok{w, }\AttributeTok{data =}\NormalTok{ data1)}
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{OLS=}\NormalTok{model, }\AttributeTok{FLGS=}\NormalTok{FGLS), }\AttributeTok{digits=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## =========================================
+##                OLS           FLGS        
+## -----------------------------------------
+## (Intercept)      0.8487 ***    0.8493 ***
+##                 (0.0751)      (0.0756)   
+## educ             0.0233 ***    0.0222 ***
+##                 (0.0039)      (0.0038)   
+## log(salbegin)    0.8218 ***    0.8270 ***
+##                 (0.0360)      (0.0358)   
+## male             0.0482 *      0.0487 *  
+##                 (0.0199)      (0.0196)   
+## minority        -0.0424 *     -0.0429 *  
+##                 (0.0203)      (0.0187)   
+## -----------------------------------------
+## R^2              0.8041        0.8046    
+## Adj. R^2         0.8024        0.8029    
+## Num. obs.      474           474         
+## =========================================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+It can be seen that the standard error for the different variables have
+been changed a bit, but nothing significant. It is very small changes,
+which maybe could indicate that the FGLS estimation have not taken into
+account all the heteroskedasticity. This will be elaborated further in
+1.8.
+
 \subsection{8 - Has the FGLS estimation taken into account all the
 heteroskedasticity?}\label{has-the-fgls-estimation-taken-into-account-all-the-heteroskedasticity}
+
+There are more ways to check whether the FGLS estimation has taken all
+the heteroskedasticity into account. One way is to look at it
+graphically and another is by doing a BP-test.
+
+We start by looking at it graphically in the Scale-Location plot:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(FGLS, }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{exam1_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+Then we perform a BP-test:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bptest}\NormalTok{(FGLS)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  studentized Breusch-Pagan test
+## 
+## data:  FGLS
+## BP = 60112, df = 4, p-value < 0.00000000000000022
+\end{verbatim}
+
+Both the plot and BP-test indicates that the FGLS estimation have not
+taken all of the heteroskedasticity into account. In the plot it looks
+like there is a slight upward trend and that the spread of the residuals
+increase with higher fitted values. This suggest that the variance of
+the residuals is not constant indicating heteroskedasticity. As
+mentioned in 1.3 the null hypothesis in a BP-test is homoskedasticity,
+but we reject the null hypothesis here, since p-value is \textgreater{}
+0.05.
 
 \end{document}

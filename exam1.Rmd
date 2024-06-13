@@ -14,25 +14,24 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Exam 1 - OLS and heteroskedasticity
 
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
-
-**MLR1:** Linear in Parameters
+\bold{MLR1: Linear in Parameters}
 The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
-where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $\u$ is an unobserved random error or disturbance term.
+where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
-**MLR2:** Random Sampling
-We have a random sample of $\n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
+\bold{MLR2: Random Sampling}
+We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
-**MLR3:** No Perfect Collinearity
+\bold{MLR3: No Perfect Collinearity}
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
-**MLR4:** Zero Conditional Mean
-The error $\u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
+\bold{MLR4: Zero Conditional Mean}
+The error $u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
-**MLR5:** Homoskedasticity
-The error $\u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+\bold{MLR5: Homoskedasticity}
+The error $u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
-**MLR6:** Normality
-The population error $\u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+\bold{MLR6: Normality}
+The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
 Look at the following model for bank employees wage:
 $$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$ 
@@ -52,7 +51,7 @@ model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
 summary(model)
 ```
 
-From the estimated model it can be seen that the education variable has a value of 0.02327 which means that one extra year of education will raise the salary by approximately 2.3%. The male variable has a value 0.04816 which means that being a man will raise your salary by approximately 4.8%. The minority variable has a value of -0.04237 which means that minorities approximately will have a 4.2% lower salary than people who are not minorities. The salbegin variable have a different interpretation because it is in log form. It has a value of 0.82180 which means that an increase of 1% in your starting salary will make your salary approximately 0.82% higher.
+From the estimated model it can be seen that the education variable has a value of 0.02327 which means that one extra year of education will raise the salary by approximately 2.3%. The male variable has a value 0.04816 which means that being a man will raise your salary by approximately 4.8%. The minority variable has a value of -0.04237 which means that minorities approximately will have a 4.2% lower salary than people who are not minorities. The salbegin variable has a different interpretation because it is in log form. It has a value of 0.82180 which means that an increase of 1% in your starting salary will make your salary approximately 0.82% higher.
 
 The intercept is 0.84868 which is the value of the dependent variable, in this case salary, when all other variables have a value of 0. So in this case 0.84868 is the expected value of the salary for a person with zero education, without a starting salary and someone who is not a male or a minority.
 
