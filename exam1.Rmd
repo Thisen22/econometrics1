@@ -46,7 +46,7 @@ Look at the following model for bank employees wage:
 $$log(salary)=\beta_0+\beta_1educ+\beta_2log(salbegin)+\beta_3male+\beta_4 minority+u$$ 
 where salary is yearly wage (in 1000 US dollars), educ is education measured in number of years, salbegin is the starting salary (in 1000 US dollars) for the person's first position in the same bank, male is a dummy variable for gender, minority is one dummy variable indicating whether one belongs to a minority.
 
-# 1 - Estimate the model using OLS. Comment on the output and interpret the results
+## 1.1 - Estimate the model using OLS. Comment on the output and interpret the results
 Here we use the lm() function to estimate the model. 
 ```{r}
 model <- lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data1)
@@ -59,7 +59,7 @@ The intercept is 0.84868 which is the value of the dependent variable, in this c
 
 It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05 but only education and log(salbegin) are statistically significant at a 1% significance level. 
 
-## 2 - Perform graphical model checking.
+## 1.2 - Perform graphical model checking.
 ```{r}
 par(mfrow = c(2, 2))
 plot(model)
@@ -72,9 +72,18 @@ plot(model)
 
 **The residuals vs leverage plot** helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it seems like there might be an outlier with observation 218 but other than that, most of the observations does not have a large Cook's distance. 
 
-## 3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
+## 1.3 - Test for heteroskedasticity using the Breusch-Pagan test and the special edition of the White test.
+When testing for heteroskedasticity, a hypothesis can be made from the MLR5 assumption about homoskedasticity in the model:
+$$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
+Given the MLR4 assumption that the error $u$ has a expected value of zero given any values of the independent variables, it can be rewritten as:
+$$\text{Var}(u) = E\left[(u - E(u))^2\right] = E\left[u^2\right] - \left(E\left[u\right]\right)^2$$
+When the expected value of $u$ is zero it can be rewritten as:
+$$E\left( u^2 \mid x_1, \ldots, x_k \right) = \sigma^2$$
+To test whether this applies, a hypothesis test can be performed:
+$$H_0 : E\left( u^2 \mid x_1, \ldots, x_k \right) = \sigma^2$$
+$$H_1 : E\left( u^2 \mid x_1, \ldots, x_k \right) \neq \sigma^2$$
 
-First, the test for heteroskedasticity can be carried out by using the Breusch-Pagan test:
+To test the hypothesis for heteroskedasticity a Breusch-Pagan test will be done:
 ```{r}
 r=residuals(model)
 res = r^2
@@ -107,7 +116,7 @@ linearHypothesis(model_white,whitetest)
 ```
 From both the BP test and the special White test it can be seen that the p-value is < 0.05 which means that there is heteroskedasticity in the model.
 
-## 4 - Calculate robust standard errors for the model and compare with the results in question 1.
+## 1.4 - Calculate robust standard errors for the model and compare with the results in question 1.
 Since there is heteroskedasticity in the model, it is necessary to take this into account, when performing a linear regression. A valid estimator of multiple linear regression in the presence of heteroskedasticity is $$Var(\hat{\beta_j})=\frac{\sum\limits_{i=0}^n\hat{r}^2_{ij}\cdot\hat{u}^2_i}{(SSR_j)^2}$$
 where $\hat{r}_{ij}$ denotes the $i$th residual from regressing $x_j$ on all other independent variables. The robust standard error is obtained by taking the square root of the above equation. R can calculate the robust standard errors using coeftest():
 ```{r}
@@ -116,7 +125,7 @@ screenreg(list(OLS=model,Standard_Robust_Error=coef_model), digits=4)
 ```
 It can be seen that the estimates from the two models are the same, which is expected, because we try to account for the non-constant variance of the error term in the OLS-model. Hence, it is only the standard errors that change. Furthermore, the significance level does not change, when performing a coeftest(), when adjusting for heteroskedasticity. The robust standard errors can be used to perform hypothesis testing and to calculate confidence intervals. Even when adjusting for heteroskedasticity, the conclusion from the regressions does not change, since the estimates are the same, and there are no significant changes. 
 
-## 5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
+## 1.5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
 $\beta_2$ is the estimate for the starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that the starting salary has an effect on the yearly salary. (MAYBE COMMENT ON WHAT KIND OF EFFECT!).
 
 To test our null hypothesis against the alternative hypothesis we use the t-statistics, which is given by:
@@ -153,7 +162,7 @@ pval
 
 So at a 5% significance level the p-value also tells us to reject the null hypothesis, further confirming the rejecting from the t-statistics before. 
 
-## 6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
+## 1.6 - Test the hypothesis $H_0: \beta_3 = \beta_4 = 0$
 When we want to test multiple hypothesis we turn to the F-statistics, where we use the following formula:
 $$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
 where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted model, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
@@ -194,7 +203,7 @@ linearHypothesis(model, myh0)
 Using the code in R to perform the F-statistics gives us the same answer as before still confirming the rejecting of our null hypothesis.
 
 
-## 7 - Estimate the model using FGLS and comment on the results.
+## 1.7 - Estimate the model using FGLS and comment on the results.
 Feasible generalised least squares (FGLS) is a method used to adress heteroskedasticity. It can be difficult to know the form of heteroskedasticity (i.e, h($x_i$)). In many cases, it is possible to model the function $h$ and use this data to estimate the unknown parameters. By estimating $h_i$, an estimated value of $h$ is obtained, $\hat{h_i}$. One method to find the exact form of $h_i$ is as follows: $$Var(u|x)=\sigma^2exp(\delta_0+\delta_1x_1+\delta_2x_2+...+\delta_kx_k)$$
 where $x_1,x_2,...,x_k$ are the independent variables in the regression.
 
@@ -228,14 +237,14 @@ screenreg(list(OLS=model, FLGS=FGLS), digits=4)
 ```
 It can be seen that the standard errors for the different variables have been changed a bit, but nothing significant. It is very small changes, which maybe could indicate that the FGLS estimation have not taken all the heteroskedasticity into account. This will be elaborated further in 1.8.
 
-## 8 - Has the FGLS estimation taken into account all the heteroskedasticity?
+## 1.8 - Has the FGLS estimation taken into account all the heteroskedasticity?
 There are more ways to check whether the FGLS estimation has taken all the heteroskedasticity into account. One way is to look at it graphically and another is by doing a BP-test.
 
 We start by looking at it graphically in the Scale-Location plot:
 ```{r}
 plot(FGLS, 3)
 ```
-
+\newpage
 Then we perform a BP-test:
 ```{r}
 bptest(FGLS)

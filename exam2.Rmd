@@ -55,7 +55,7 @@ minority <- data2$minority; salary <- data2$salary
 ```
 
 
-## 1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
+## 2.1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
 Here we use the lm() function to estimate the two models. 
 ```{r}
 model = lm(salary ~ educ + salbegin + male + minority, data = data2)
@@ -81,8 +81,9 @@ The intercept is 0.84913 which is the value of the dependent variable, in this c
 It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05. Only education and log(salbegin) are significant at a 1% significance level.
 
 It is worth noting that the adjusted R-squared is 0.8034 for the second model, where it is a bit lower in the first model at 0.7944.
+\newpage
 
-## 2. Carry out graphical model checking of the two models. Which model would you prefer?
+## 2.2. Carry out graphical model checking of the two models. Which model would you prefer?
 **Model 1**
 ```{r}
 par(mfrow = c(2, 2))
@@ -96,7 +97,7 @@ plot(model)
 
 **The residuals vs leverage plot** helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it does not seem like there is any observations with a large enough Cook's distance to be outside of the limits. There are some observations quite far apart from the rest but none outside of the limits from the dashed lines.
 
-**Model 2*
+**Model 2**
 ```{r}
 par(mfrow = c(2, 2))
 plot(model2)
@@ -111,7 +112,7 @@ plot(model2)
 
 Because it fits the four models the best and has the highest adjusted $R^2$, it can be argued that model 2 would be preferred over model 1. 
 
-## 3. Examine whether the two models are misspecified using the RESET test.
+## 2.3. Examine whether the two models are misspecified using the RESET test.
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
@@ -145,14 +146,15 @@ resettest(model); resettest(model2)
 Since both models have a p-value higher than 5%, respectively 7.7% and 7.3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are misspecified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
 
-## 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $\beta_5$). Briefly comment on the output, and perform the RESET test again.
-If it is still assumed, that the model is misspecified, then it could be argued that including $educ^2$ could help correctly specify the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
+## 2.4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $\beta_5$). Briefly comment on the output, and perform the RESET test again.
+If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. By excluding the variable $educ^2$, it would be correlated with the error term, why the model would not fulfill assumption MLR4.  Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms.
 
 **Model 1**
 ```{r}
 model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
 summary(model_ed)
 ```
+\newpage
 
 **Model 2**
 ```{r}
@@ -184,7 +186,7 @@ resettest(model_ed);resettest(model_ed2)
 Since the p-values increase, the models are now better specified, and $H_0$ cannot be rejected.
 
 
-## 5. Test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models (from question 4).
+## 2.5. Test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models (from question 4).
 To test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients are statistically significant.
 
 The formula for the F-statistics is:
@@ -234,7 +236,7 @@ linearHypothesis(model_ed2, myh0)
 Using the code in R to perform the F-statistics gives us the same answer as before still confirming the rejecting of our null hypothesis.
 
 
-## 6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
+## 2.6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
 It is possible that there could be some kind of measurement errors in the two models. Sometimes, it is difficult to collect data that truly reflects the correct value. If we think of the dependent variable in this model, which is income, then there can be different problems depending on how the data is collected. If it is collected from the tax register, then it might not reflect the true value of people's income, because some might have a larger income if they have done some kind of undeclared work that is not registered. If the data is obtained by asking people about their income then there might be a difference between what they tell and their actual income. 
 
 There can also be some problems with the independent variables in the model. Some people might lie about their education, or some can have problems remembering how many years of experience they have. 

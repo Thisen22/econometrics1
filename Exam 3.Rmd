@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- data3$male; black <- data3$ethblack; hisp <- data3$ethhisp; sibling <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ```
 
-## Exam 3 - Instrumental variables
+# Exam 3 - Instrumental variables
 
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
@@ -49,7 +49,7 @@ where earnings are hourly wages in US dollars, educ is education measured in yea
 Additionally, we have three instruments: mother's education measured in years (meduc), father's education measured in years (feduc), and number of siblings (sibling s).
 
 
-# 1. Estimate the model using OLS and comment on the results.
+## 3.1. Estimate the model using OLS and comment on the results.
 Here we use the lm() function to estimate the model. 
 ```{r}
 model <- lm(log_earning~educ+exp+male+black+hisp, , data = data3)
@@ -61,10 +61,10 @@ The intercept is 0.396226 which is the value of the dependent variable, in this 
 
 It can also be seen that all the variables except the hispanic variable are statistically significant at a 5% significance level due to p-values < 0.05. They are also significant at a 1% significance level.
 
-## 2. Why might we be concerned that education is endogenous?
+## 3.2. Why might we be concerned that education is endogenous?
 Given the significant positive relationship between education and earnings, it is important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example family background could influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
 
-## 3. Are sibling, meduc, and feduc useful as instruments?
+## 3.3. Are sibling, meduc, and feduc useful as instruments?
 To find out whether these variables are useful instruments, they have to fulfill two conditions; they need to be correlated with educ and they need to be independent of the error term, $u$:
 $$Cov(x,z)\neq0$$
 $$Cov(z,u)=0$$
@@ -76,6 +76,8 @@ $$H_0: \pi_5=0, \pi_6=0 \:or\: \pi_7=0$$
 $$H_1: \pi_5\neq0,\pi_6\neq0 \: or \: \pi_7\neq0$$
 By using F-tests, we can test the hypothesis. F-stat is calculated using the following formula:
 $$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
+\newpage
+
 ```{r}
 sib <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ivreg <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
@@ -89,8 +91,8 @@ linearHypothesis(ivreg,ivtest)
 Since the p-value < 0.05 $H_0$ is rejected, hence the three variables are statistically significant. Thereby it can be assumed, that the three variables are correlated with education, and can be used as instruments for education.
 
 
-## 4. Test whether education is endogenous.
-First we find the reduced form residuals from the linear regression including the three Instrument Variables. The reduced form residuals is denoted as $\hat{v}$. $\hat{v}$ is then included in the original OLS model, and if the residuals are significant, it means that there is an endogeneity issue:
+## 3.4. Test whether education is endogenous.
+According to Hausman, the method to test whether a variable is endogenous, is to examine if the results of OLS and 2SLS are different, and if this difference is statistically significant. If it is stastistically significant, it can be argued that there is endogeneity. To test this, we find the reduced form residuals from the linear regression including the three Instrument Variables. The reduced form residuals is denoted as $\hat{v}$. $\hat{v}$ is then included in the original OLS model, and if the residuals are significant, it means that there is an endogeneity issue:
 $$y_1=\beta_0+\beta_1y_2+\beta_2x_1+\beta_3x_2+\delta v + error$$
 
 Thereby we get the nullhypothesis:
@@ -103,7 +105,7 @@ coeftest(res_mod)
 ```
 Since residuals are not significant, we fail to reject $H_0$, and thereby we cannot conclude that there is an endogeneity issue. This does not mean that educ does not have an endogeneity issue, but for these IV variables there is not.
 
-## 5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
+## 3.5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
 The p-value of 0.11 is not sufficient to reject that there is an endogeneity issue, why it is deemed necessary to further examine if there is an issue. To accomodate this issue, we use the 2SLS method. A regression on this form is set up:
 $$y_1=\beta_0+\beta_1y_2+\beta_2exp+\beta_3male+\beta_4black+\beta_5hisp+u$$
 where $y_2$=educ, the variable that is suspected to have endogeneity. Now, a regression for educ is made. The three IV's for educ is added in the regression:
@@ -130,6 +132,8 @@ $$y_1=\beta_0+\beta_1(\hat{y_2}+v)+\beta_2exp+\beta_3male+\beta_4black+\beta_5hi
 stage2 <- lm(log_earning~educ_fitted+exp+male+black+hisp)
 sls <- ivreg(log_earning~educ+exp+male+black+hisp|exp+male+black+hisp+sib+feduc+meduc)
 ```
+\newpage
+
 Setting the new 2SLS and the OLS up:
 ```{r}
 screenreg(list(OLS=model,TwoSLS=sls), digits=4)
@@ -137,7 +141,11 @@ screenreg(list(OLS=model,TwoSLS=sls), digits=4)
 It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and Afro-American as well as Hispanic falls. Male and experience does not really change. 
 
 
-## 6. Perform the overidentification test. What do you conclude?
+## 3.6. Perform the overidentification test. What do you conclude?
+For a single endogenous variable, we need at least one instrument, but if we want to use more than one instrument for one endogenous variable, then we risk overidentifying. We used 3 instruments to estimate educ in 3.3. Because we have more instruments than needed we can perform an overidentification test to see whether some of them are uncorrelated with the structural error. The purpose of the test is to test whether the difference on the 3 coefficients are statistically significant. Is this the case, then it can be concluded that one of the instruments (or all) is showing endogeneity issues.
+
+Just because they return statstically similar estimates, that does not mean that they necessarily are exogenous and does not have endogeneity issues and is correlated with the error term. If it can be concluded that they are statistically significant different, then some of the instruments needs to be removed.
+
 First,  the 2SLS residuals, $\hat{u}$, from the earlier estimated 2SLS model are obtained. 
 ```{r}
 resid2sls <- resid(sls)
@@ -160,7 +168,7 @@ pval
 ```
 From the calculated p-value, $H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification issues.
 
-## 7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
+## 3.7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
 We perform the entire analysis again, starting from 3.3, because 3.1 and 3.2 are not about the choice of instrumental variables. The tests and methods will not be elaborated further, so for an explanation of what we are doing look at the earlier assignments.
 
 We start by testing whether meduc and feduc are useful as instruments using the same method as in 3.3:
