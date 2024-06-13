@@ -1,6 +1,6 @@
 ---
 title: "Exam 2"
-author: "Mathias Kold"
+author: "Johan Bysted, Jonathan Arve og Mathias Kold"
 date: "2024-04-18"
 output:
   pdf_document: default
@@ -11,28 +11,36 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Exam 2 - OLS and misspecification
+# Exam 2 - OLS and misspecification
+
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
 **MLR1: Linear in Parameters**
+
 The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
 where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
 **MLR2: Random Sampling**
+
 We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
 **MLR3: No Perfect Collinearity**
+
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
 **MLR4: Zero Conditional Mean**
+
 The error $u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
 **MLR5: Homoskedasticity**
+
 The error $u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
 **MLR6: Normality**
+
 The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
+\newpage
 Consider the following two models for bank employees' salaries:
 \begin{enumerate}
     \item $salary = \beta_0 + \beta_1 educ + \beta_2 salbegin + \beta_3 male + \beta_4 minority + u$
@@ -42,16 +50,14 @@ where $salary$ is the annual salary (in 1000 US dollars), $educ$ is education me
 
 
 ```{r}
-library(readr); library(texreg); library(car)
-data2 <- read_csv("data2.csv")
-educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male; minority <- data2$minority; salary <- data2$salary
+educ <- data2$educ; salbegin <- data2$salbegin; male <- data2$male 
+minority <- data2$minority; salary <- data2$salary
 ```
 
 
 ## 1. Estimate the two models using OLS. Comment on the output, compare and interpret the results.
 Here we use the lm() function to estimate the two models. 
 ```{r}
-library(lmtest)
 model = lm(salary ~ educ + salbegin + male + minority, data = data2)
 model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 ```
@@ -59,7 +65,7 @@ model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 ```{r}
 summary(model)
 ```
-The education variable has an estimate of 0.99327 which means that one extra year of education will raise the annual salary by approximately 993 dollars. The salbegin variable has an estimate of 1.60816 which means that one more unit (1000 dollars) of starting salary will give 1.60816 more units (1608.16 dollars) of annual salary. The male variable has an estimate of 1.83088 which means that if you are a male your annual salary will be 1.83088 units (1830.88 dollars) higher than if you are a woman. The minority variable has an estimate of -1.72539 which means that if you are a minority your annual salary will be 1.72539 units (1725.39 dollars) lower than if you are not a minority.
+The education variable has an estimate of 0.99327 which means that one extra year of education will raise the annual salary by approximately 993 dollars. The salbegin variable has an estimate of 1.60816 which means that one more unit (1000 dollars) of starting salary will give 1.60816 more units (1608.16 dollars) of annual salary. The male variable has an estimate of 1.83088 which means that if you are a male your annual salary will be 1830.88 dollars higher than if you are a woman. The minority variable has an estimate of -1.72539 which means that if you are a minority your annual salary will be 1725.39 dollars lower than if you are not a minority.
 
 The intercept is -6.93228 which is the value of the dependent variable, in this case annual salary (in 1000 dollars), when all other variables have a value of 0. In this case a negative intercept does not really make sense since salary can not be negative.
 
@@ -74,45 +80,49 @@ The intercept is 0.84913 which is the value of the dependent variable, in this c
 
 It can also be seen that all the variables are statistically significant at a 5% significance level due to p-values < 0.05. Only education and log(salbegin) are significant at a 1% significance level.
 
-It is worth noting that the adjusted R-squared is 0.8034 for the second model, where as it is a bit lower in the first model at 0.7944.
+It is worth noting that the adjusted R-squared is 0.8034 for the second model, where it is a bit lower in the first model at 0.7944.
 
 ## 2. Carry out graphical model checking of the two models. Which model would you prefer?
+**Model 1**
 ```{r}
+par(mfrow = c(2, 2))
 plot(model)
 ```
-The residual vs fitted model shows if the residuals have non-linear patterns. If they are equally spread around a horizontal line without any patterns it indicates that the residuals does not have non-linear patterns. It can be seen that the residuals are not quite spread around a horizontal line but rather a decreasing line.
+**The residual vs fitted model** shows if the residuals have non-linear patterns. If they are equally spread around a horizontal line without any patterns it indicates that the residuals does not have non-linear patterns. It can be seen that the residuals are not quite spread around a horizontal line but rather a decreasing line.
 
-The Q-Q residuals plot shows if the residuals are normally distributed. If the residuals fit the dotted line they are normally distributed. In this case, the residuals fit the dotted line except in the first and last quantiles where they deviate from the dotted line. They deviate a bit more upwards from the line than downwards. This could indicate that the residuals are approximately normally distributed although not perfectly normally distributed.
+**The Q-Q residuals plot shows** if the residuals are normally distributed. If the residuals fit the dotted line they are normally distributed. In this case, the residuals fit the dotted line except in the first and last quantiles where they deviate from the dotted line. They deviate a bit more upwards from the line than downwards. This could indicate that the residuals are approximately normally distributed although not perfectly normally distributed.
 
-The scale-location plot shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. In this case, it can be argued that there is an increase in the spread of the residuals which indicates heteroskedasticity.
+**The scale-location plot** shows if homoskedasticity exists within the residuals. If the residuals are spread equally around the predictors, the model fulfills the assumption of homoskedasticity. In this case, it can be argued that there is an increase in the spread of the residuals which indicates heteroskedasticity.
 
-The residuals vs leverage plot helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it does not seem like there is any observations with a large enough Cook's distance to be outside of the limits. There are some observations quite far apart from the rest but none outside of the limits from the dashed lines.
+**The residuals vs leverage plot** helps detect outliers in the model. It is important because outliers can have a major impact in the model. The residuals can be seen if they have a large Cook's distance, which is the dashed line. In this case, it does not seem like there is any observations with a large enough Cook's distance to be outside of the limits. There are some observations quite far apart from the rest but none outside of the limits from the dashed lines.
 
+**Model 2*
 ```{r}
+par(mfrow = c(2, 2))
 plot(model2)
 ```
-From the residuals vs fitted plot it can be seen that the residuals are more equally spread around the line than in the first model. The line also looks to be more horizontal where the first model showed a more decreasing line.
+**From the residuals vs fitted plot** it can be seen that the residuals are more equally spread around the line than in the first model. The line also seems to be more horizontal where the first model showed a more decreasing line.
 
-From the Q-Q residuals plot it can be seen that the residuals fit the dotted line better than the first model although still not perfectly. This indicates that the residuals are approximately normally distributed and at least closer to a normal distribution than the first model.
+**From the Q-Q residuals plot** it can be seen that the residuals fit the dotted line better than the first model although still not perfectly. This indicates that the residuals are approximately normally distributed and at least closer to a normal distribution than the first model.
 
-The scale-location plot does not show the same signs of heteroskedasticity as in the first model. The residuals are closer together and are spread more equally around the horizontal line in this model.
+**The scale-location plot** does not show the same signs of heteroskedasticity as in the first model. The residuals are closer together and are spread more equally around the horizontal line in this model.
 
-The residuals vs leverage plot does not show any significant outliers as none of the observations have a large enough Cook's distance to be outside of the limits.
+**The residuals vs leverage plot** does not show any significant outliers as none of the observations have a large enough Cook's distance to be outside of the limits.
 
-Because it fits the four models the best, it can be argued that model 2 would be preferred over model 1.
+Because it fits the four models the best and has the highest adjusted $R^2$, it can be argued that model 2 would be preferred over model 1. 
 
 ## 3. Examine whether the two models are misspecified using the RESET test.
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
 $$H_1:\delta_1\neq0,\delta_2=0$$
-First we use the values found from the two models to find our yhat for model and model2.
+First we use the values found from the two models to find our $\hat{y}$ for model 1 and model 2.
 Setting up the new models to perform a RESET test:
 $$y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$$
 where $\hat{y}$ is the fitted value from the original model. $\hat{y}^2$ and $\hat{y}^3$ will capture any nonlinearities, if present in the model.
 ```{r}
-yhat1 <- -6.93228 + 0.99327*educ + 1.60816*salbegin + 1.83088*male - 1.72539*minority
-yhat2 <- 0.849130 + 0.023578*log(salbegin) + 0.045474*male - -0.041856*minority
+yhat1 <- -6.93228 + 0.99327*educ + 1.60816*salbegin + 1.83088*male - 1.72539*minority #model 1
+yhat2 <- 0.849130 + 0.023578*log(salbegin) + 0.045474*male - -0.041856*minority #model 2
 yhat1_sq <- yhat1^2; yhat1_cub <- yhat1^3
 yhat2_sq <- yhat2^2; yhat2_cub <- yhat2^3
 mod1_res <- lm(salary ~ educ + salbegin + male + minority + yhat1_sq + yhat1_cub)
@@ -123,9 +133,8 @@ When the the RESET models has been made, we can use waldtest to find the F-stati
 ```{r}
 waldtest(mod1_res, terms=c("yhat1_sq","yhat1_cub"))
 ```
-For model2:
+For model 2:
 ```{r}
-library(lmtest)
 waldtest(mod2_res, terms=c("yhat2_sq","yhat2_cub"))
 ```
 
@@ -133,18 +142,19 @@ To confirm our results, we can use (resettest)
 ```{r}
 resettest(model); resettest(model2)
 ```
-Since both models have a p-value higher than 5%, respectively 7,7% and 7,3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are mis-specified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
+Since both models have a p-value higher than 5%, respectively 7.7% and 7.3%, $H_0$ cannot be rejected, and therefore we cannot conclude that any of the models are misspecified. However, both p-values are still pretty low, and would not be accepted at e.g. a 10% significance level.
 
 
 ## 4. Explain why it could be relevant to include $educ^2$ as an explanatory variable in the two models. Estimate the two models again with $educ^2$ included (along with its corresponding coefficient $\beta_5$). Briefly comment on the output, and perform the RESET test again.
-If it is still assumed, that the model is mis-specified, then it could be argued that including the squared could help correctly specifying the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
+If it is still assumed, that the model is misspecified, then it could be argued that including $educ^2$ could help correctly specify the model. Excluding the variable could lead to a bias on educ in the original model. Furthermore, by including $educ^2$, the model will be able to capture any quadratic forms. 
 
+**Model 1**
 ```{r}
 model_ed <- lm(salary~educ+salbegin+male+minority+I(educ^2))
 summary(model_ed)
 ```
 
-
+**Model 2**
 ```{r}
 model_ed2 <- lm(log(salary)~educ+log(salbegin)+male+minority+I(educ^2))
 summary(model_ed2)
@@ -161,7 +171,7 @@ We can set up comparisons of the two models, with and without $educ^2$
 screenreg(list(Model1=model, Model1_ed2=model_ed))
 ```
 
-In the above lists, there's an upward bias on educ, when $educ^2$ is not included, whereas there's a negative effect when $educ^2$ is included, while education in the long run will affect your salary positive. 
+In the above lists, there is an upward bias on educ, when $educ^2$ is not included, whereas there is a negative effect when $educ^2$ is included, while education in the long run will affect your salary positive. 
 
 Comparing for log(salary):
 ```{r}
@@ -175,14 +185,13 @@ Since the p-values increase, the models are now better specified, and $H_0$ cann
 
 
 ## 5. Test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models (from question 4).
-To test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients is statistically significant.
+To test the hypothesis $H_0: \beta_1 = \beta_5 = 0$ in both models from question 4, we can use the F-test. This tests whether both the coefficient for educ and the coefficient for $educ^2$ are equal to zero. If the null hypothesis is rejected, it indicates that at least one of these coefficients are statistically significant.
 
 The formula for the F-statistics is:
 $$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
-where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
+where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted model, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
 
-<<<<<<< HEAD
-The two unrestricted models are given in exercise 2.4, so what we need to do is estimate our two restricted models, that looks like the following:
+The two unrestricted models are given in 2.4, so what we need to do is estimate our two restricted models, that looks like the following:
 $$salary=\beta_0+\beta_2salbegin+\beta_3male+\beta_4minority+u$$
 $$log(salary)=\beta_0++\beta_2log(salbegin)+\beta_3male+\beta_4minority+u$$
 ```{r}
@@ -190,7 +199,7 @@ model_r <- lm(salary ~ salbegin + male + minority, data = data2)
 model_r2 <- lm(log(salary) ~ log(salbegin) + male + minority, data = data2)
 ```
 
-We then obtain our $R^2$ from the restricted and unrestriced models:
+We then obtain our $R^2$ from the restricted and unrestricted models:
 ```{r}
 r2_ur <- summary(model_ed)$r.squared
 r2_r <- summary(model_r)$r.squared
@@ -212,7 +221,7 @@ We then calculate our critical values of the F-statistics at 5% significance lev
 qf(0.95, 2, 450-5-1)
 ```
 
-Our decision rule says that if F > c then we reject our null hypothesis and instead accepting our alternative hypothesis meaning that $\beta_1$ and $\beta_5$ for the education does have a statistically impact on yearly salary in both of our models. 
+Our decision rule says that if F > c then we reject our null hypothesis and instead accept our alternative hypothesis meaning that $\beta_1$ and $\beta_5$ for the education does have a statistical impact on yearly salary in both of our models. 
 
 It is also possible to do the test directly in R by using the following code:
 ```{r}
@@ -222,11 +231,11 @@ linearHypothesis(model_ed2, myh0)
 
 ```
 
-Using the code in R to perform the F-statistics gives us the some answer as before still confirming the rejecting of our null hypothesis.
+Using the code in R to perform the F-statistics gives us the same answer as before still confirming the rejecting of our null hypothesis.
 
 
 ## 6. Could there be issues with measurement errors in the two models? In what cases would it pose a problem?
-It is of course possible that there could be some kind og measurement errors in the two models. Sometimes, it is difficult to collect data that truly reflects the correct value. If we think of the dependent variable in this model, which is income, then there can be different problems depending on how the data is collected. If it is taking from tax register, then it might not reflect the truly value of peoples income, because some might have a larger income if they done some kind of undeclared work that is not registered. If the data is obtained by going around and asking people about their income then there might be a difference between what they tell and their actual income. 
+It is possible that there could be some kind of measurement errors in the two models. Sometimes, it is difficult to collect data that truly reflects the correct value. If we think of the dependent variable in this model, which is income, then there can be different problems depending on how the data is collected. If it is collected from the tax register, then it might not reflect the true value of people's income, because some might have a larger income if they have done some kind of undeclared work that is not registered. If the data is obtained by asking people about their income then there might be a difference between what they tell and their actual income. 
 
 There can also be some problems with the independent variables in the model. Some people might lie about their education, or some can have problems remembering how many years of experience they have. 
 For all variables that is included and especially data that reflects economic behavior it can be very difficult to obtain true and reliable data and avoid the above mentioned measurement errors. 
@@ -234,6 +243,7 @@ For all variables that is included and especially data that reflects economic be
 We can look at the two different scenarios and what kind of effects it can have in the model, when there is a measurement error in the dependent variable or in the independent variable. 
 
 \textbf{Measurement errors in dependent variable}
+
 We assume the following model has measurement errors in the dependent variable:
 $$y^* = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
 Where the measurement error is given by difference between the observed $y^*$ and the true $y$:
@@ -244,14 +254,15 @@ If we substitute $y^*$ into the original model we get:
 $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + (u+e_0)$$
 So we can now see that measurement errors will affect the error term in the model, which will increase the variance of the model and have an effect on the coefficients variance and thereby the estimates of the population values. 
 But is the estimator biased or unbiased in the case of measurement errors?
-We can say that the OLS estimators are unbiased and consistent if the measurement error in the dependent variable is statistically independent of the explanatory variables under the assumption:
+We can say that the OLS estimators are unbiased and consistent if the measurement error in the dependent variable is statistically independent of the explanatory variables under the assumptions:
 $$E(u)=E(e_0)=0 \qquad  Cov(u,e_0)=0, \quad Cov(e_0,x)=0$$
 If $e_0$ does not have a zero mean, then we will get a biased estimate of the intercept, but the slope would remain the same. 
 If $e_0$ and $u$ are uncorrelated then the variance can be calculated as:
 $$Var(u+e_0)=\sigma^2_u+\sigma^2_e$$
 
 \textbf{Measurement errors in independent variable}
-If we now instead look at a model where we assume a measurement error in one of the independent variables:
+
+If we look at a model where we assume measurement errors in one of the independent variables:
 $$y=\beta_0+\beta_1x_1^*+u$$
 The measurement error in $x^*_1$ is given by $e_1=x_1-x^*_1$, where we can isolate the observed variable $x^*_1$, so $x^*_1=x_1-e_1$. We can substitute this into the original model:
 $$y=\beta_0+\beta_1(x_1-e_1)+u$$
@@ -261,13 +272,15 @@ $$y=\beta_0+\beta_1x_1+u-\beta_1e_1$$
 How measurement errors in independent variables affect OLS estimates depends upon which assumptions you make, and usually there are two extreme assumptions discussed.
 
 \textbf{Assumption 1 - uncorrelated with $x_1$}
+
 The first assumption is that the measurement error is uncorrelated with the true value $x_1$ and if this is true then the measurement error must be correlated with the observed value $x^*_1$:
 $$Cov(x_1,e_1)=0 \qquad Cov(x^*_1,e_1)\neq0$$
-In this case the regression $y=\beta_0+\beta_1x_1+u-\beta_1e_1$ will be unbiased because it was assumed that the measurement error was not correlated with $x_1$. The estimates of the model therefore be still be consistent and unbiased, but as in the case with measurement error in the dependent variable it will lead to an increase in the variance of the model, because the error term is changed:
+In this case the regression $y=\beta_0+\beta_1x_1+u-\beta_1e_1$ will be unbiased because it was assumed that the measurement error was not correlated with $x_1$. The estimates of the model will therefore still be consistent and unbiased, but as in the case with measurement error in the dependent variable it will lead to an increase in the variance of the model, because the error term is changed:
 $$Var(u-\beta_1e_1)=\sigma^2_u+\beta_1^2\sigma^2_e$$
 
 \textbf{Assumption 2 - uncorrelated with $x_1^*$}
-The other assumption is when the measurement error instead is uncorrelated with the observed value $x_1^*$ meaning that it must be correlated with the true value $x_1$:
+
+The other assumption is when the measurement error is uncorrelated with the observed value $x_1^*$ meaning that it must be correlated with the true value $x_1$:
 $$Cov(x_1,e_1)\neq0 \qquad Cov(x^*_1,e_1)=0$$
 In econometrics this particular case is known as classical errors-in-variables (CEV). In this case it would create biased estimators because the measurement error is correlated with the measurement error which means that $x_1$ is also assumed to be correlated with the error term of the model, making it biased and inconsistent.
 

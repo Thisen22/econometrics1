@@ -1,6 +1,6 @@
 ---
-title: "exam4"
-author: "Mathias Kold"
+title: "Exam 4"
+author: "Johan Bysted, Jonathan Arve og Mathias Kold"
 date: "2024-05-30"
 output:
   pdf_document: default
@@ -9,70 +9,76 @@ output:
 
 ```{r setup4, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(readr); library(texreg); library(AER); library(texreg); library(mfx)
-data <- read.csv("data4.csv")
 part <- data$participation; inc <- data$income; age <- data$age; age_sq <- data$agesq; educ <- data$educ; you <- data$youngkids; old <- data$oldkids; fore <- data$foreign
 ```
 
-## Exam 4 - Models for binary variables
+# Exam 4 - Models for binary variables
 
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
 **MLR1: Linear in Parameters**
+
 The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
 where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
 **MLR2: Random Sampling**
+
 We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
 **MLR3: No Perfect Collinearity**
+
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
 **MLR4: Zero Conditional Mean**
+
 The error $u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
 **MLR5: Homoskedasticity**
+
 The error $u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
 **MLR6: Normality**
-The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
 
-In this assignment, we investigate the factors that influence whether women in Switzerland participate in the labor force
+The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+\newpage
+
+In this assignment, we investigate the factors that influence whether women in Switzerland participate in the labor force.
 
 The dependent variable is participation, a binary variable that measures whether the person is part of the labor force. Additionally, we have seven explanatory variables: income that is not work-related measured in 1000 CHF (income), age (age), age squared (agesq), education measured in years (educ), number of children under 7 years old (youngkids), number of children over 7 years old (oldkids), and a dummy variable indicating whether the person is a foreigner (foreign).
 
 The dataset data4 contains these variables measured for 872 Swiss women.
 
-##1. Set up a linear regression model for participation where you use the described explanatory variables.
+## 1. Set up a linear regression model for participation where you use the described explanatory variables.
 
-###(a) Estimate the model using OLS and comment on the results.
+### (a) Estimate the model using OLS and comment on the results.
+Here we use the lm() function to estimate the model. 
 ```{r}
-model <- lm(part~inc+age+age_sq+educ+you+old+fore)
+model <- lm(part~inc+age+age_sq+educ+you+old+fore, , data = data)
 summary(model)
 ```
-From the model, it can be seen that the income variable has an estimate of -0.0035163 which means that one unit (1000 CHF) more income will give approximately 0.35% lower probability of participation. 
+From the model, it can be seen that the income variable has an estimate of -0.0035 which means that one unit (1000 CHF) more income will give approximately 0.35% lower probability of participation. 
 
-The age variable has an estimate of 0.0633852 while the age squared variable has an estimate of -0.0009029 which means that the probability of participation will be higher up to a certain age where the probability will start to drop. This makes sense due to people retiring at a certain age.
+The age variable has an estimate of 0.0634 while the age squared variable has an estimate of -0.0009 which means that the probability of participation will be higher up to a certain age where the probability will start to drop. This makes sense due to people retiring at a certain age.
 
-The education variable has an estimate of 0.0067725 which means that one extra year of education will give approximately a 0.68% higher probability of participation.
+The education variable has an estimate of 0.0068 which means that one extra year of education will give approximately a 0.68% higher probability of participation.
 
-The young kids variable for number of children under 7 years old has an estimate of -0.2390033 which means that if you have children under 7 years old, you will have approximately 23.9% lower probability of participation than people without children under 7 years old.
+The young kids variable for number of children under 7 years old has an estimate of -0.239 which means that if you have children under 7 years old, you will have approximately 23.9% lower probability of participation than people without children under 7 years old.
 
-The old kids variable for number of children over 7 years old has an estimate of -0.0474930 which means that if you have children over 7 years old, you will have approximately 4.75% lower probability of participation than people without children over 7 years old.
+The old kids variable for number of children over 7 years old has an estimate of -0.0475 which means that if you have children over 7 years old, you will have approximately 4.75% lower probability of participation than people without children over 7 years old.
 
-The foreign variable has an estimate of 0.2572106 which means that you have approximately 25.72% higher probability of participation if you are foreign than if you are not foreign.
+The foreign variable has an estimate of 0.2572 which means that you have approximately 25.72% higher probability of participation if you are foreign than if you are not foreign.
 
-The intercept is -0.0035163 which is the value of the dependent variable, in this case participation in the labor force, when all other variables have a value of 0.
+The intercept is -0.0035 which is the value of the dependent variable, in this case participation in the labor force, when all other variables have a value of 0.
 
 It can also be seen that all the variables except education are statistically significant at a 5% significance level due to p-values < 0.05. All variables except education are also significant at a 1% significance level.
 
-###(b) Test whether the partial effect of education is different from zero.
-Using a t-test, we can test whether the partial effect of education is different from zero. We set up our null hypothesis, that is:
+### (b) Test whether the partial effect of education is different from zero.
+Using a t-test, we can test whether the partial effect of education is different from zero. We set up our null hypothesis:
 $$H_0: \beta_4=0$$
 And the alternative hypothesis:
 $$H_1: \beta_4 \neq 0$$
 
-If the t-value is within the 95% accept-interval, we fail to reject our null hypothesis. Otherwise, we reject our null hypothesis, and instead accept our alternative hypothesis. We perform a two-sided test, which means there is 2,5% outside of the acceptance interval on each side. 
+If the t-value is within the 95% accept-interval, we fail to reject our null hypothesis. Otherwise, we reject our null hypothesis, and instead accept our alternative hypothesis. We perform a two-sided test, which means there is 2.5% outside of the acceptance interval on each side. 
 
 The t-score can be calculated as follows:
 $$t=\frac{\beta_j}{se(\beta_j)}$$
@@ -90,12 +96,11 @@ interval <- c(-acc,acc)
 names(interval) <- c("Lower limit", "Upper limit")
 interval
 ```
-Since the calculated t-score is within the accept interval, we fail to reject our null hypothesis at a 5% significance level. 
+Since the calculated t-score (1.136) is within the accept interval, we fail to reject our null hypothesis at a 5% significance level. 
 
-###(c) Test whether the partial effect of age is different from zero.
+### (c) Test whether the partial effect of age is different from zero.
 
-
-We can test whether the partial effect of age is different from zero. We set up our null hypothesis, that is:
+We can test whether the partial effect of age is different from zero. We set up our null hypothesis:
 $$H_0: \beta_2=0, \beta_3=0$$
 And the alternative hypothesis:
 $$H_1: \beta_2 \neq 0, \beta_3 \neq 0$$
@@ -108,13 +113,15 @@ waldtest(model, vcov=vcovHC(model,type="HC0"), terms=(2:3))
 Using the Wald test we get a p-value < 0.05, and we reject our null hypothesis, and instead accept our alternative hypothesis, $H_1$, that the partial effect of age is not equal to 0.
 
 
-##2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
+## 2. Set up both a logit and a probit model for participation where you use the described explanatory variables.
 
-The purpose of the probit and logit models are to model the probability of "succes" so the models should lie in the unit interval [0,1]. To make this happen the model has a general function G(·) that takes a value between 0 and 1:
+The purpose of the probit and logit models are to model the probability of "success" so the models should lie in the unit interval [0,1]. To make this happen the model has a general function G(·) that takes a value between 0 and 1:
 $$P(y = 1|x) = G(\beta_0 + \beta_1x_1 + \beta_2x_2 + \ldots + \beta_k x_k)$$
 
 The function can be written as a logit and probit model.
+
 Logit: $G(z) = \tau(z) = \frac{exp(z)}{[1 + exp(z)]}$
+
 Probit: $G(z) = \Phi(z) = \int_{-\infty}^{z} \frac{1}{\sqrt{2\pi}} exp{{(-z^2}/{2)}} du$
 
 From these models, the partial effect of the independent variables can not be seen directly. The partial effect of a change in a variable can be found by taking the partial derivative of a function $g$:
@@ -124,7 +131,8 @@ Therefore, the estimated partial effects of a roughly continous variable, $x_j$ 
 $$
 \Delta \hat{P}(y = 1 \mid x) \approx \left[ g(\hat{\beta}_0 + {x}\hat{\beta}) \hat{\beta}_j \right] \Delta x_j
 $$
-###(a) Estimate the models.
+
+### (a) Estimate the models.
 
 The logit model and the probit model are estimated:
 ```{r}
@@ -132,11 +140,11 @@ model_logit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link
 model_probit <- glm(part~inc+age+age_sq+educ+you+old+fore, family = binomial(link = "probit"))
 screenreg(list( Logit = model_logit, Probit = model_probit), digits = 4)
 ```
-As explained earlier, the estimates can not be interpreted directly without calculating the partial effect. From this model, it can be seen whether the variables are statisically significant and whether they have a positive og negative effect on the dependent variable.
+As explained earlier, the estimates can not be interpreted directly without calculating the partial effect. From this model, it can be seen whether the variables are statisically significant and whether they have a positive or negative effect on the dependent variable.
 
 It can be seen that the income variable has a negative effect in both models while it is also significant at a 1% significance level.
 
-The age variable has a positive effect in both models while the age squared variable has a negative effect in both models. This could indicate, like in assignment 1a that the effect becomes negative at a certain age. They are both significant at a 1% significance level.
+The age variable has a positive effect in both models while the age squared variable has a negative effect in both models. This could indicate, like in 4.1a that the effect becomes negative at a certain age. They are both significant at a 1% significance level.
 
 The education variable is not statistically significant which means that we can not conclude on this variable.
 
@@ -146,22 +154,22 @@ The old kids variable has a negative effect in both models while it is also sign
 
 The foreign variable has a positive effect in both models while it is also significant at a 1% significance level.
 
-###(b) Test whether the partial effect of education is different from zero.
+### (b) Test whether the partial effect of education is different from zero.
 
 To test whether the partial effect of educ is different from zero in the models, we set up a null hypothesis and an alternative hypothesis:
 $$H_0: \beta_4=0$$
 
 $$H_1: \beta_4 \neq 0$$
-These are tested using a t-test, as in assignment 4.1. 
+These are tested using a t-test, as in 4.1a. 
 ```{r}
 screenreg(list(Logit=coeftest(model_logit), Probit=coeftest(model_probit)),digits=4)
 ```
 Since neither educ is significance for the logit or the probit, we fail to reject $H_0$. The fact that we fail to reject $H_0$ does not mean, that we can conclude, that the effect of education is different from zero. Hence, it is not sure, that educ has an effect on participation rate.
 
 
-###(c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
+### (c) Test whether the partial effect of age is different from zero using a likelihood-ratio test.
 
-To hypothesis test on multiple parameters (age and $age^2$), we can use the likelihood-ratio test.
+To perform a hypothesis test on multiple parameters (age and $age^2$), we can use the likelihood-ratio test.
 $$LR=2(L_{ur}-L_r)$$
 The LR-test is similiar to the F-test, but the multiplication of 2 is needed so that the LR approximates a chi-square distribution
 
@@ -180,7 +188,7 @@ lrlogit <- 2*(logLik(model_logit)-logLik(logitR))
 pvallog <- pchisq(lrlogit,df=2, lower.tail=F)
 pvallog
 ```
-For logit $H_0$ is rejected since p-val<0.05, and we instead accept our alternative hypothesis, that the partial effect of age is different from 0.
+For logit $H_0$ is rejected since p-value < 0.05, and we instead accept our alternative hypothesis, that the partial effect of age is different from 0.
 
 The same can be done for probit:
 ```{r}
@@ -188,9 +196,9 @@ lrprobit <- 2*(logLik(model_probit)-logLik(probitR))
 pvalprob <- pchisq(lrprobit, df=2, lower.tail=F)
 pvalprob
 ```
-The same result can be observed here; p-val<0.05. Hence, we once again reject $H_0$ and instead accept our alternative hypothesis: age is different from zero.
+The same result can be observed here; p-value < 0.05. Hence, we once again reject $H_0$ and instead accept our alternative hypothesis: age is different from zero.
 
-##3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
+## 3. We want to compare the partial effect of income across the models. Calculate the average partial effect (APE) and comment on the results.
 To compare the partial effect of income across the models we use the APE (average partial effect) method on both the probit and logit model and then compare it with the LPM. We do this because it makes little sense to compare the direct coefficient estimates from a logit or probit model (or LPM). APE method is the closest to a comparable estimate between models that we find and it also can be compared with the LPM.
 
 
@@ -209,14 +217,13 @@ screenreg(list(APE_Logit=ape_model_logit, APE_Probit=ape_model_probit, LMP=model
 When looking at the estimate for income in the logit and probit model it can be seen that they are the same and that there is a larger average effect of change in income on the probability of participation than in the LPM. In the logit and probit model the effect of a one unit increase in income is a -0.46% change in the probability of participation, where it in the LPM is -0.35%. The consistency in the results across the models reinforces the robustness of that an increase in income is associated with a lower probability of participation.
 
 
-##4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
+## 4. We want to compare the partial effect of the foreign variable across the models. Calculate the Average Partial Effect (APE) and comment on the results.
 
 APE is used to to examine a dummy variable, foreign. We calculate APE using the method for discrete variables. 
 
-$$A\hat{P}E=n^{-1}\sum\limits_{i=1}^n[G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids+\beta_7]-$$
-
-$$G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids]]$$
-So the APE when foreign ($\beta_7$) is included minus APE when foreign is excluded. For each observation (i), the estimated effect of changing foreign from 0 to 1 is calculated.
+$$A\hat{P}E=n^{-1}\sum\limits_{i=1}^n[G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids+\beta_7]$$
+$$-G[\beta_0+\beta_1income+\beta_2age+\beta_3agesq+\beta_4educ+\beta_5youngkids+\beta_6oldkids]]$$
+So the APE when foreign ($\beta_7$) is included minus APE when foreign is excluded. For each observation ($i$), the estimated effect of changing foreign from 0 to 1 is calculated.
 
 We start by setting up a matrix for all variables and define if a person is foreign(1) or not(0):
 ```{r}
@@ -246,7 +253,7 @@ logitAPE
 ```
 It can be seen, that the probit APE is approximately 0.25, which is almost the same as for the LPM (0.26). However, for logit, it can be seen, that there is a quite big difference, as logit gives a result of 0.336, which indicates, that the partial effects for probit is almost the same as for LPM, where as for logit there is a difference. Which one is more correct, is hard to interpret.
 
-##5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
+## 5. Why is the Average Partial Effect (APE) preferred over the Partial Effect at the Average (PEA)?
 
 The partial effect at the average (PEA) can be seen as the partial effect at the "average" of a variable. It is written like this:
 $$
@@ -258,11 +265,11 @@ On the other hand, the average partial effect (APE) calculates the partial effec
 $$\hat{APE}=\hat{\beta_j}[n^{-1}\sum\limits_{i=0}^{n}g({x_i}\hat{\beta})]$$
 Therefore, the reason that APE is preferred over PEA is that the APE shows the partial effect where as the PEA shows the partial effect of the average person.
 
-##6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
+## 6. Compare the models' predictive abilities by calculating the percent correctly predicted for each model.
 Using a goodness of fit estimate called percently correctly predicted (PCP), which shows how big a share of the data that the models predicts correctly. However, PCP is not necessarily always a good indicator of the model. E.g. if 300 answers yes and 60 answers no, but the model predicts that everyone answers yes, it will have a high PCP, but is not necessarily a good predictor. To examine when the model predicts correctly, we set up a probability limit for fitted values of the models:
 $$\tilde{y}=1, if\; \tilde{y}\;\geq\;c$$
 $$\tilde{y}=0, if\; \tilde{y}\;\leq\;c$$
-The probability limit is set to 0.5. Hence, fitted values of the three models below 0.5 will predict that the person not participating in the labor force (y=0), while fitted values over 0.5 will predict, that the person participates in the labor force (y=1).
+The probability limit is set to 0.5. Hence, fitted values of the three models below 0.5 will predict that the person is not participating in the labor force (y=0), while fitted values over 0.5 will predict, that the person participates in the labor force (y=1).
 
 PCP is calculated in R in the following way:
 ```{r}

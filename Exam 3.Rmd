@@ -1,6 +1,6 @@
 ---
 title: "Exam 3"
-author: "Johan Bysted"
+author: "Johan Bysted, Jonathan Arve og Mathias Kold"
 date: "2024-05-16"
 output:
   pdf_document: default
@@ -9,8 +9,6 @@ output:
 
 ```{r setup3, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(readr); library(texreg); library(AER)
-data3 <- read_csv("data3.csv")
 log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- data3$male; black <- data3$ethblack; hisp <- data3$ethhisp; sibling <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ```
 
@@ -19,23 +17,30 @@ log_earning <- data3$learnings; educ <- data3$educ; exp <- data3$exp; male <- da
 In a multiple linear regression (MLR) there are 6 assumptions. Assumption 1-5 are called Gauss-Markov assumptions and assumption 6 is called the normality assumption. The first 4 assumptions exist to secure that the model is unbiased, while assumption 5 checks for heteroskedasticity and assumption 6 checks for normality in the model. The assumptions are:
 
 **MLR1: Linear in Parameters**
+
 The model in the population can be written as $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + u$$
 where $\beta_0, \beta_1, \ldots, \beta_k$ are the unknown parameters of interest and $u$ is an unobserved random error or disturbance term.
 
 **MLR2: Random Sampling**
+
 We have a random sample of $n$ observations, $\{(x_{i1}, x_{i2}, \ldots, x_{ik}, y_i) : i = 1, 2, \ldots, n\}$, following the population model in Assumption MLR.1.
 
 **MLR3: No Perfect Collinearity**
+
 In the sample (and therefore in the population), none of the independent variables is constant, and there are no exact linear relationships among the independent variables.
 
 **MLR4: Zero Conditional Mean**
+
 The error $u$ has an expected value of zero given any values of the independent variables. In other words, $$E(u | x_1, x_2, \ldots, x_k) = 0$$
 
 **MLR5: Homoskedasticity**
+
 The error $u$ has the same variance given any value of the explanatory variables. In other words, $$\text{Var}(u | x_1, x_2, \ldots, x_k) = \sigma^2$$
 
 **MLR6: Normality**
+
 The population error $u$ is independent of the explanatory variables $x_1, x_2, \ldots, x_k$ and is normally distributed with zero mean and variance $\sigma^2$: $u \sim \text{Normal}(0, \sigma^2)$.
+\newpage
 
 Consider the following model:
 $log(earning) = \beta_0 + \beta_1educ + \beta_2exp + \beta_3male + \beta_4ethblack + \beta_5ethhisp + u$
@@ -44,9 +49,10 @@ where earnings are hourly wages in US dollars, educ is education measured in yea
 Additionally, we have three instruments: mother's education measured in years (meduc), father's education measured in years (feduc), and number of siblings (sibling s).
 
 
-##1. Estimate the model using OLS and comment on the results.
+# 1. Estimate the model using OLS and comment on the results.
+Here we use the lm() function to estimate the model. 
 ```{r}
-model <- lm(log_earning~educ+exp+male+black+hisp)
+model <- lm(log_earning~educ+exp+male+black+hisp, , data = data3)
 summary(model)
 ```
 From the model, it can be seen that the education variable has an estimate of 0.124220 which means that one extra year of education will raise the hourly wage by approximately 12.42%. The experience variable has an estimate of 0.033882 which means that one more year of experience will raise the hourly wage by approximately 3.39%. The male variable has an estimate of 0.293449 which means that if you are a male your hourly wage will be approximately 29.34% higher than if you are a woman. The black variable has an estimate of -0.19567 which means that African Americans approximately will have 19.57% lower hourly wages than non-African Americans. The Hispanics variable has an estimate of -0.097406 which means that Hispanic approximately will have 9.74% lower hourly wages than non-Hispanics.
@@ -55,20 +61,19 @@ The intercept is 0.396226 which is the value of the dependent variable, in this 
 
 It can also be seen that all the variables except the hispanic variable are statistically significant at a 5% significance level due to p-values < 0.05. They are also significant at a 1% significance level.
 
-##2. Why might we be concerned that education is endogenous?
+## 2. Why might we be concerned that education is endogenous?
+Given the significant positive relationship between education and earnings, it is important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example family background could influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
 
-Given the significant positive relationship between education and earnings, it's important to consider if endogeneity is biasing the results. The potential endogeneity of education needs to be tested through instrumental variables (IV) regression. There may be factors that affect both education and earnings that are not included in the model. For example could family background influence both education and earning potential. If these factors are not accounted for, the estimated coefficient on education will capture not only the effect of education but also the effect of these omitted variables, leading to bias.
-
-##3.Are sibling, meduc, and feduc useful as instruments?
+## 3. Are sibling, meduc, and feduc useful as instruments?
 To find out whether these variables are useful instruments, they have to fulfill two conditions; they need to be correlated with educ and they need to be independent of the error term, $u$:
 $$Cov(x,z)\neq0$$
 $$Cov(z,u)=0$$
-In this case, x is the variable, z is the instruments and u is the error term in the model. If the instruments are correlated with the error term, these are also affected by an endogeneity issue. The instruments need to be uncorrelated with the omitted variable, that creates an endogeneity issue for educ.
+In this case, $x$ is the variable, $z$ is the instruments and $u$ is the error term in the model. If the instruments are correlated with the error term, these are also affected by an endogeneity issue. The instruments need to be uncorrelated with the omitted variable, that creates an endogeneity issue for educ.
 The first condition, $Cov(x,z)\neq0$, can be tested. A model for the variable educ as the dependent variable can be set up. When multiple IVs are used, 2SLS is used:
 $$educ=\pi_0+\pi_1exp+\pi_2male+\pi_3black+\pi_4hisp+\pi_5sib+\pi_6meduc+\pi_7feduc+v$$
 Setting up the hypothesis test:
-$$H_0: \pi_5=\pi_6=\pi_7$$
-$$H_1: \pi_5\neq\pi_6\neq\pi_7$$
+$$H_0: \pi_5=0, \pi_6=0 \:or\: \pi_7=0$$
+$$H_1: \pi_5\neq0,\pi_6\neq0 \: or \: \pi_7\neq0$$
 By using F-tests, we can test the hypothesis. F-stat is calculated using the following formula:
 $$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
 ```{r}
@@ -76,7 +81,7 @@ sib <- data3$siblings; meduc <- data3$meduc; feduc <- data3$feduc
 ivreg <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
 summary(ivreg)
 ```
-It can here be seen, that all three factors are significant, where especially meduc and feduc is at a good significance level.
+It can be seen, that all three factors are significant at a 5\% significance level.
 ```{r}
 ivtest <- c("sib=0","meduc=0","feduc=0")
 linearHypothesis(ivreg,ivtest)
@@ -84,9 +89,11 @@ linearHypothesis(ivreg,ivtest)
 Since the p-value < 0.05 $H_0$ is rejected, hence the three variables are statistically significant. Thereby it can be assumed, that the three variables are correlated with education, and can be used as instruments for education.
 
 
-##4. Test whether education is endogenous.
+## 4. Test whether education is endogenous.
 First we find the reduced form residuals from the linear regression including the three Instrument Variables. The reduced form residuals is denoted as $\hat{v}$. $\hat{v}$ is then included in the original OLS model, and if the residuals are significant, it means that there is an endogeneity issue:
-$y_1=\beta_0+\beta_1y_2+\beta_2x_1+\beta_3x_2+\delta v + error$ Thereby we get the nullhypothesis:
+$$y_1=\beta_0+\beta_1y_2+\beta_2x_1+\beta_3x_2+\delta v + error$$
+
+Thereby we get the nullhypothesis:
 $$H_0: \delta=0 $$
 
 ```{r}
@@ -94,18 +101,19 @@ res <- ivreg$residuals
 res_mod <- lm(log_earning~educ+exp+male+black+hisp+res)
 coeftest(res_mod)
 ```
-Since residuals are not significant,we fail to reject $H_0$, and we thereby we cannot conclude that there is an endogeneity issue. This does not mean that educ does not have an endogeneity issue, but for these IV variables there is not.
+Since residuals are not significant, we fail to reject $H_0$, and thereby we cannot conclude that there is an endogeneity issue. This does not mean that educ does not have an endogeneity issue, but for these IV variables there is not.
 
-##5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
+## 5. Estimate the model using 2SLS employing the three described instruments. Compare with the results in  question 1.
 The p-value of 0.11 is not sufficient to reject that there is an endogeneity issue, why it is deemed necessary to further examine if there is an issue. To accomodate this issue, we use the 2SLS method. A regression on this form is set up:
 $$y_1=\beta_0+\beta_1y_2+\beta_2exp+\beta_3male+\beta_4black+\beta_5hisp+u$$
-where $y_2$=educ, the variable that is suspected to have endogeneity. Now, a regression for educ($y_2$) is made. The three IV's for educ is added in the regression:
+where $y_2$=educ, the variable that is suspected to have endogeneity. Now, a regression for educ is made. The three IV's for educ is added in the regression:
 $$y_2=\pi_0+\pi_1exp+\pi_2male+\pi_3black+\pi_4hisp+\pi_5sib+\pi_6meduc+\pi_7feduc+v$$
 In this regression, the following assumptions is expected to be fulfilled:
-- $E(v)=0$. The mean of the error term is 0, which indicates unbiasedness.
-- $Cov(x,v)=0$. This applies for all variables in the original model.
-- $Cov(z,v)=0$. The IV's should be independent of the error term.
-
+\begin{itemize}
+  \item $E(v)=0$. The mean of the error term is 0, which indicates unbiasedness.
+  \item $Cov(x,v)=0$. This applies for all variables in the original model.
+  \item $Cov(z,v)=0$. The IV's should be independent of the error term.
+\end{itemize}
 
 ```{r}
 stage1 <- lm(educ~exp+male+black+hisp+sib+meduc+feduc)
@@ -126,16 +134,16 @@ Setting the new 2SLS and the OLS up:
 ```{r}
 screenreg(list(OLS=model,TwoSLS=sls), digits=4)
 ```
-It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and afro american as well as hispanic falls. Male and experience does not really change. 
+It can be seen, that when using the 2SLS, the estimate for educ increases a bit, and Afro-American as well as Hispanic falls. Male and experience does not really change. 
 
 
-##6. Perform the overidentification test. What do you conclude?
+## 6. Perform the overidentification test. What do you conclude?
 First,  the 2SLS residuals, $\hat{u}$, from the earlier estimated 2SLS model are obtained. 
 ```{r}
 resid2sls <- resid(sls)
 ```
 
-Then the residuals are regressed on all exogenous variables including the IV's, where R-squared, $R^2_1$ is obtained.
+Then the residuals are regressed on all exogenous variables including the IV's, where $R^2_1$ is obtained.
 ```{r}
 res.aux <- lm(resid2sls ~ exp + male + black + hisp + sib + meduc + feduc)
 ```
@@ -150,17 +158,17 @@ teststat <- n*r2
 pval <- 1-pchisq(teststat,df=2)
 pval
 ```
-From the calculated p-value, $H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification.
+From the calculated p-value, $H_0$ is rejected at a 5% significance level due to the p-value < 0.05. This means that at least some of the IV's are not exogenous, which means that the model does not pass the test and is assumed to have overidentification issues.
 
-##7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
-We perform the entire analysis again, starting from 3.3, because 3.1 and 3.2 are not about the choice of instrumental variables. The tests and methods will not be elaborated further, so for an explanation of what we are doing look at the earlier exercises.
+## 7. Perform the entire analysis again using only meduc and feduc as instruments. Does this change your conclusions?
+We perform the entire analysis again, starting from 3.3, because 3.1 and 3.2 are not about the choice of instrumental variables. The tests and methods will not be elaborated further, so for an explanation of what we are doing look at the earlier assignments.
 
 We start by testing whether meduc and feduc are useful as instruments using the same method as in 3.3:
 ```{r}
 ivreg7 <- lm(educ ~ exp + male + black + hisp + meduc + feduc)
 linearHypothesis(ivreg7, c("meduc=0","feduc=0"))
 ```
-Since the p-value < 0.05 $H_0$ is rejected, hence the two variables are statistically significant, why it can be assumed, that meduc and feduc are correlated with education, and can be used as instruments for education.
+Since the p-value < 0.05 $H_0$ is rejected, the two variables are statistically significant, why it can be assumed, that meduc and feduc are correlated with education, and can be used as instruments for education.
 
 Now we want to test if there is endogeneity issues in the new model with the two instrumental variables. The same method as in 3.4 will be used:
 ```{r}
@@ -175,7 +183,7 @@ We perform the 2SLS method again as in 3.5, but this time with only meduc and fe
 sls2 <- ivreg(log_earning ~ educ + exp + male + black + hisp | exp + male + black + hisp + feduc + meduc)
 ```
 
-To look whether it changes our conclusions we print it together with the OLS from 3.1 and the 2SLS from 3.5:
+To see whether it changes our conclusions we combare it with the OLS from 3.1 and the 2SLS from 3.5:
 ```{r}
 screenreg(list(OLS=model, SLS3_5 = sls, SLS3_7=sls2), digits = 4)
 ```
