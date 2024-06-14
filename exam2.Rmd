@@ -116,7 +116,7 @@ Because it fits the four models the best and has the highest adjusted $R^2$, it 
 The null hypothesis, $H_0$ is that the model is correctly specified:
 $$H_0:\delta_1=0=,\delta_2=0$$
 And the alternative hypothesis is:
-$$H_1:\delta_1\neq0,\delta_2=0$$
+$$H_1:\delta_1\neq0,\delta_2\neq0$$
 First we use the values found from the two models to find our $\hat{y}$ for model 1 and model 2.
 Setting up the new models to perform a RESET test:
 $$y=\beta_0+\beta_1x_1+\beta_2x_2+...+\beta_kx_k+\delta_1\hat{y}^2+\delta_2\hat{y}^3+v$$
@@ -284,6 +284,6 @@ $$Var(u-\beta_1e_1)=\sigma^2_u+\beta_1^2\sigma^2_e$$
 
 The other assumption is when the measurement error is uncorrelated with the observed value $x_1^*$ meaning that it must be correlated with the true value $x_1$:
 $$Cov(x_1,e_1)\neq0 \qquad Cov(x^*_1,e_1)=0$$
-In econometrics this particular case is known as classical errors-in-variables (CEV). In this case it would create biased estimators because the measurement error is correlated with the measurement error which means that $x_1$ is also assumed to be correlated with the error term of the model, making it biased and inconsistent.
+In econometrics this particular case is known as classical errors-in-variables (CEV). In this case it would create biased estimators because the measurement error is correlated with the error term which means that $x_1$ is also assumed to be correlated with the error term of the model, making it biased and inconsistent.
 
 It should be noted that a measurement error in one of the independent variable will cause bias and inconsistency in all the other included independent variables under assumption 2.

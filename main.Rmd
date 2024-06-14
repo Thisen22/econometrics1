@@ -2,11 +2,12 @@
 title: "Econometrics exam project"
 author: "Johan Bysted, Jonathan Arve & Mathias Kold"
 date: "`r format(Sys.Date(), '%d. %B %Y')`"
-output: 
+output:
   pdf_document:
-        latex_engine: pdflatex
-  toc: true
-  toc-title: "Table of contents"
+    latex_engine: pdflatex
+  toc: yes
+  toc-title: Table of contents
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}

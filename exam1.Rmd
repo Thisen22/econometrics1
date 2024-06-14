@@ -82,8 +82,16 @@ $$E\left( u^2 \mid x_1, \ldots, x_k \right) = \sigma^2$$
 To test whether this applies, a hypothesis test can be performed:
 $$H_0 : E\left( u^2 \mid x_1, \ldots, x_k \right) = \sigma^2$$
 $$H_1 : E\left( u^2 \mid x_1, \ldots, x_k \right) \neq \sigma^2$$
+This is tested by examining whether some of the independent variables are correlated with the $u^2$. For this we set up a regression model. Here it must be noted that the squared error term of the population is not known, why this is estimated from the sample with the following method:
+$$\hat{u}^2=\delta_0+\delta_1x_1 + \ldots + \delta_k x_k + error$$
+On the regression is then performed a F-test/LM test, to test whether the coefficients are equal to 0. If they are, then the null hypothesis can not be rejected, indicating homoskedasticity. If they are not equal to 0, then the alternative hypothesis is accepted indicating heteroskedasticity in the model.
 
-To test the hypothesis for heteroskedasticity a Breusch-Pagan test will be done:
+When we want to test multiple hypothesis we turn to the F-statistics, where we use the following formula:
+$$F=\frac{R^2_{ur}-R^2_{r}}{1-R^2_{ur}}*\frac{n-k-1}{q}$$
+where $R^2_{ur}$ is the R-squared from our unrestricted model, $R^2_{r}$ is the R-squared from the restricted model, $q$ is the difference in the degrees of freedom between the unrestricted and restricted model, $n$ is the number of observations in the dataset and $k$ is the number of independent variables in the unrestricted model.
+\newpage
+
+We perform this directly in R with the summary():
 ```{r}
 r=residuals(model)
 res = r^2
@@ -91,21 +99,26 @@ summary(lm(res~educ + log(salbegin) + male + minority, data = data1))
 ```
 Because the p-value is 0.007475 which is < 0.05, we reject the null hypothesis meaning that there is heteroskedasticity in the model.
 
-We can now calculate the LM test, where we have 474 observations and $R^2=0.1231$:
+The LM test is simply obtained by: $LM=R^2_{ur}*n$
+We can now calculate the LM test, where we have 474 observations and $R^2=0.02923$:
 ```{r}
-LM = 0.1231*474
+LM = 0.02923*474
 LM
 ```
-We can then calculate the p-value of chi-square $\chi^2_k$:
+We can then calculate the p-value of chi-square $\chi^2_k$ from LM test in R:
 ```{r}
 1-pchisq(LM,4)
 ```
-Both the LM and F test reject the null hypothesis meaning there is heteroskedasticity in the model. The Breusch-Pagan test can also be directly run in R using the bptest function which also gives us the p-value.
+Both the LM and F-test reject the null hypothesis meaning there is heteroskedasticity in the model. The Breusch-Pagan test can also be directly run in R using the bptest function which also gives us the p-value.
 
 ```{r}
 bptest(model)
 ```
-The special White test can also be used to do the test the model for heteroskedasticity. 
+
+**The special edition of the White test**
+The special White test can also be used to do the test the model for heteroskedasticity. It is a simplification of the original proposed test that adds the squares and cross products of all the independent variables to the equation. This would become more and more complicated as the number of independent variables in the model increase, so instead the special edition of the White test is more simple and maintains a low number of degrees of freedom. It tests whether the error term is correlated with some of the included variables, which will create heteroskedasticity. Practically, adapted values of $y$ are included in this test:
+$$\hat{u}^2=\delta_0+\delta_1\hat{y}+\delta_2\hat{y}+e$$
+Then we test the joint hypothesis: $H_0:\delta_1=0, \delta_2=0$ against $H_1: \delta_1\neq0, \delta_2\neq0$. If the null hypothesis is accepted, then homoscedasticity is assumed, as the result shows that the fitted values of the model is not correlated with the error term, which indicates that there is no heteroskedasticity:
 ```{r}
 yhat <- fitted(model)
 quadu <- (residuals(model)^2)
@@ -126,7 +139,7 @@ screenreg(list(OLS=model,Standard_Robust_Error=coef_model), digits=4)
 It can be seen that the estimates from the two models are the same, which is expected, because we try to account for the non-constant variance of the error term in the OLS-model. Hence, it is only the standard errors that change. Furthermore, the significance level does not change, when performing a coeftest(), when adjusting for heteroskedasticity. The robust standard errors can be used to perform hypothesis testing and to calculate confidence intervals. Even when adjusting for heteroskedasticity, the conclusion from the regressions does not change, since the estimates are the same, and there are no significant changes. 
 
 ## 1.5 - Test the hypothesis $H_0:\beta_2 = 1$ against the alternative $H_1: \beta_2 \neq 1$.
-$\beta_2$ is the estimate for the starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that the starting salary has an effect on the yearly salary. (MAYBE COMMENT ON WHAT KIND OF EFFECT!).
+$\beta_2$ is the estimate for the log-starting salary's effect on the the yearly salary, so when we want to test the null hypothesis $H_0:\beta_2 = 1$ it means that we want to test whether the log-starting salary population parameter is equal to 1 (indicating a 1\% increase in log-starting salary will make log-salary 1\% higher).
 
 To test our null hypothesis against the alternative hypothesis we use the t-statistics, which is given by:
 $$t_{{\hat\beta}_j}=\frac{\hat{\beta_j}-1}{se(\hat{\beta_j})}$$
@@ -151,8 +164,7 @@ c
 abs(t_stat)>c
 ```
 
-
-We can see that the absolute value of the t-statistic is greater than the critical value at a 5% significance level, meaning that we reject the null hypothesis, so we instead accept the alternative hypothesis saying that the starting salary does have a statistically significant effect on the yearly salary.
+We can see that the absolute value of the t-statistic is greater than the critical value at a 5% significance level, meaning that we reject the null hypothesis, so we instead accept the alternative hypothesis saying that the true population parameter for log-starting salary is not 1.
 
 Another way to test the null hypothesis is by calculating the p-value. The definition of the p-value is the probability of obtaining a t-statistic more or as extreme as the one observed in the sample. We use R to calculate the p-value in the following way:
 ```{r}
@@ -244,11 +256,11 @@ We start by looking at it graphically in the Scale-Location plot:
 ```{r}
 plot(FGLS, 3)
 ```
-\newpage
+
 Then we perform a BP-test:
 ```{r}
 bptest(FGLS)
 ```
 
-Both the plot and BP-test indicates that the FGLS estimation have not taken all of the heteroskedasticity into account. In the plot it looks like there is a slight upward trend and that the spread of the residuals increase with higher fitted values. This suggest that the variance of the residuals is not constant indicating heteroskedasticity. As mentioned in 1.3 the null hypothesis in a BP-test is homoskedasticity, but we reject the null hypothesis here, since p-value is > 0.05.
+Both the plot and BP-test indicates that the FGLS estimation have not taken all of the heteroskedasticity into account. In the plot it looks like there is a slight upward trend and that the spread of the residuals increase with higher fitted values. This suggest that the variance of the residuals is not constant indicating heteroskedasticity. As mentioned in 1.3 the null hypothesis in a BP-test is homoskedasticity, but we reject the null hypothesis here, since p-value is < 0.05.
 
