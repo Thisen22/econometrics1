@@ -116,6 +116,7 @@ bptest(model)
 ```
 
 **The special edition of the White test**
+
 The special White test can also be used to do the test the model for heteroskedasticity. It is a simplification of the original proposed test that adds the squares and cross products of all the independent variables to the equation. This would become more and more complicated as the number of independent variables in the model increase, so instead the special edition of the White test is more simple and maintains a low number of degrees of freedom. It tests whether the error term is correlated with some of the included variables, which will create heteroskedasticity. Practically, adapted values of $y$ are included in this test:
 $$\hat{u}^2=\delta_0+\delta_1\hat{y}+\delta_2\hat{y}+e$$
 Then we test the joint hypothesis: $H_0:\delta_1=0, \delta_2=0$ against $H_1: \delta_1\neq0, \delta_2\neq0$. If the null hypothesis is accepted, then homoscedasticity is assumed, as the result shows that the fitted values of the model is not correlated with the error term, which indicates that there is no heteroskedasticity:
